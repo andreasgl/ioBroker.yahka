@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "yahka",
-        "version": "0.11.0",
+        "version": "0.11.23",
         "news": {
             "0.11.0": {
                 "en": "Updated dependencies, support nodejs 12",
