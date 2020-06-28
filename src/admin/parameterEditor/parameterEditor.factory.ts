@@ -4,6 +4,7 @@ import { ParameterEditor_Const } from "./parameterEditor.const";
 import { ParameterEditor_SingleState } from "./parameterEditor.singleState";
 import { ParameterEditor_MultiState } from "./parameterEditor.multiState";
 import { ParameterEditor_HomeMaticWindowCoveringTargetPosition } from "./parameterEditor.homematic.WindowCovering.TargetPosition";
+import { ParameterEditor_knxWindowCoveringTargetPosition } from "./parameterEditor.knx.WindowCovering.TargetPosition";
 import { ParameterEditor_ScaleConversionEditor } from "./parameterEditor.scaleConversion";
 import { ParameterEditor_ConversionScript } from "./parameterEditor.conversionScript";
 import { ParameterEditor_Map } from "./parameterEditor.map";
@@ -19,7 +20,8 @@ export let inoutFunctions = new Map<string, ParameterEditorFactory>([
     ["ioBroker.State.OnlyACK", (callback) => new ParameterEditor_SingleState(callback)],
     ["ioBroker.homematic.WindowCovering.TargetPosition", (callback) => new ParameterEditor_HomeMaticWindowCoveringTargetPosition(callback)],
     ["ioBroker.homematic.Dimmer.On", (callback) => new ParameterEditor_HomeMatic_Dimmer(callback, true)],
-    ["ioBroker.homematic.Dimmer.Brightness", (callback) => new ParameterEditor_HomeMatic_Dimmer(callback, false)]
+    ["ioBroker.homematic.Dimmer.Brightness", (callback) => new ParameterEditor_HomeMatic_Dimmer(callback, false)],
+    ["ioBroker.knx.WindowCovering.TargetPosition", (callback) => new ParameterEditor_knxWindowCoveringTargetPosition(callback)]
 ]);
 export let convFunctions = new Map<string, ParameterEditorFactory>([
     ["", (callback) => new ParameterEditor_Null(callback)],
