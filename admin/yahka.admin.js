@@ -87,1096 +87,6 @@ var yahkaAdmin =
 /************************************************************************/
 /******/ ({
 
-/***/ "../hap-nodejs-community-types/types.js":
-/*!**********************************************!*\
-  !*** ../hap-nodejs-community-types/types.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var inherits = __webpack_require__(/*! util */ "../node_modules/util/util.js").inherits;
-var Service, Characteristic;
-
-module.exports = function(homebridge, options) {
-  Service = homebridge.hap.Service;
-  Characteristic = homebridge.hap.Characteristic;
-  UUID = homebridge.hap.uuid;
-
-  var CommunityTypes = {};
-
-  if (!options) options = {};
-
-
-  // Characteristics
-
-  CommunityTypes.Timestamp = function() {
-    Characteristic.call(this, "Timestamp", CommunityTypes.Timestamp.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.STRING,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.WRITE, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.Timestamp.UUID = 'FF000001-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.Timestamp, Characteristic);
-
-  CommunityTypes.AudioDataURL = function() {
-    Characteristic.call(this, "Audio URL", CommunityTypes.AudioDataURL.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.STRING,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.WRITE, Characteristic.Perms.NOTIFY ]
-    });
-  };
-  CommunityTypes.AudioDataURL.UUID = 'FF000002-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.AudioDataURL, Characteristic);
-
-  CommunityTypes.VideoDataURL = function() {
-    Characteristic.call(this, "Video URL", CommunityTypes.VideoDataURL.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.STRING,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.WRITE, Characteristic.Perms.NOTIFY ]
-    });
-  };
-  CommunityTypes.VideoDataURL.UUID = 'FF000003-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.VideoDataURL, Characteristic);
-
-  CommunityTypes.AudioVolume = function() {
-    Characteristic.call(this, 'Audio Volume', CommunityTypes.AudioVolume.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT8,
-      unit: Characteristic.Units.PERCENTAGE,
-      maxValue: 100,
-      minValue: 0,
-      minStep: 1,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.WRITE, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.AudioVolume.UUID = '00001001-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.AudioVolume, Characteristic);
-
-  CommunityTypes.Muting = function() {
-    Characteristic.call(this, 'Muting', CommunityTypes.Muting.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT8,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.WRITE, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.Muting.UUID = '00001002-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.Muting, Characteristic);
-
-  CommunityTypes.PlaybackState = function() {
-    Characteristic.call(this, 'Playback State', CommunityTypes.PlaybackState.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT8,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.WRITE, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.PlaybackState.UUID = '00002001-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.PlaybackState, Characteristic);
-  CommunityTypes.PlaybackState.PLAYING = 0;
-  CommunityTypes.PlaybackState.PAUSED = 1;
-  CommunityTypes.PlaybackState.STOPPED = 2;
-
-  CommunityTypes.SkipForward = function() {
-    Characteristic.call(this, 'Skip Forward', CommunityTypes.SkipForward.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.BOOL,
-      perms: [ Characteristic.Perms.WRITE ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.SkipForward.UUID = '00002002-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.SkipForward, Characteristic);
-
-  CommunityTypes.SkipBackward = function() {
-    Characteristic.call(this, 'Skip Backward', CommunityTypes.SkipBackward.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.BOOL,
-      perms: [ Characteristic.Perms.WRITE ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.SkipBackward.UUID = '00002003-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.SkipBackward, Characteristic);
-
-  CommunityTypes.ShuffleMode = function() {
-    Characteristic.call(this, 'Shuffle Mode', CommunityTypes.ShuffleMode.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT8,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.WRITE, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.ShuffleMode.UUID = '00002004-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.ShuffleMode, Characteristic);
-  //NOTE: If GROUP or SET is not supported, accessories should coerce to ALBUM.
-  // If ALBUM is not supported, coerce to ITEM.
-  // In general, it is recommended for apps to only assume OFF, ITEM, and ALBUM
-  // are supported unless it is known that the accessory supports other settings.
-  CommunityTypes.ShuffleMode.OFF = 0;
-  //NOTE: INDIVIDUAL is deprecated.
-  CommunityTypes.ShuffleMode.ITEM = CommunityTypes.ShuffleMode.INDIVIDUAL = 1;
-  CommunityTypes.ShuffleMode.GROUP = 2; // e.g. iTunes "Groupings"
-  CommunityTypes.ShuffleMode.ALBUM = 3; // e.g. album or season
-  CommunityTypes.ShuffleMode.SET = 4; // e.g. T.V. Series or album box set
-
-  CommunityTypes.RepeatMode = function() {
-    Characteristic.call(this, 'Repeat Mode', CommunityTypes.RepeatMode.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT8,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.WRITE, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.RepeatMode.UUID = '00002005-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.RepeatMode, Characteristic);
-  CommunityTypes.RepeatMode.OFF = 0;
-  CommunityTypes.RepeatMode.ONE = 1;
-  CommunityTypes.RepeatMode.ALL = 2;
-
-  CommunityTypes.PlaybackSpeed = function() {
-    Characteristic.call(this, 'Playback Speed', CommunityTypes.PlaybackSpeed.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.FLOAT,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.WRITE, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.PlaybackSpeed.UUID = '00002006-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.PlaybackSpeed, Characteristic);
-
-  CommunityTypes.MediaCurrentPosition = function() {
-    Characteristic.call(this, 'Media Current Position', CommunityTypes.MediaCurrentPosition.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.FLOAT, // In seconds
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.MediaCurrentPosition.UUID = '00002007-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.MediaCurrentPosition, Characteristic);
-
-  CommunityTypes.MediaItemName = function() {
-    Characteristic.call(this, 'Media Name', CommunityTypes.MediaItemName.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.STRING,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.MediaItemName.UUID = '00003001-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.MediaItemName, Characteristic);
-
-  CommunityTypes.MediaItemAlbumName = function() {
-    Characteristic.call(this, 'Media Album Name', CommunityTypes.MediaItemAlbumName.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.STRING,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.MediaItemAlbumName.UUID = '00003002-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.MediaItemAlbumName, Characteristic);
-
-  CommunityTypes.MediaItemArtist = function() {
-    Characteristic.call(this, 'Media Artist', CommunityTypes.MediaItemArtist.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.STRING,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.MediaItemArtist.UUID = '00003003-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.MediaItemArtist, Characteristic);
-
-  CommunityTypes.MediaItemDuration = function() {
-    Characteristic.call(this, 'Media Duration', CommunityTypes.MediaItemDuration.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.FLOAT, // In seconds
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.MediaItemDuration.UUID = '00003005-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.MediaItemDuration, Characteristic);
-
-  CommunityTypes.StillImage = function() {
-    Characteristic.call(this, 'Still Image', CommunityTypes.StillImage.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.DATA,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.WRITE, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.StillImage.UUID = '00004001-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.StillImage, Characteristic);
-
-  // Also known as MIME type...
-  CommunityTypes.MediaTypeIdentifier = function() {
-    Characteristic.call(this, 'Media Type Identifier', CommunityTypes.MediaTypeIdentifier.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.STRING,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.WRITE, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.MediaTypeIdentifier.UUID = '00004002-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.MediaTypeIdentifier, Characteristic);
-
-  CommunityTypes.MediaWidth = function() {
-    Characteristic.call(this, 'Media Width', CommunityTypes.MediaWidth.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT32,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.WRITE, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.MediaWidth.UUID = '00004003-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.MediaWidth, Characteristic);
-
-  CommunityTypes.MediaHeight = function() {
-    Characteristic.call(this, 'Media Width', CommunityTypes.MediaHeight.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT32,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.WRITE, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.MediaHeight.UUID = '00004004-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.MediaHeight, Characteristic);
-  
-
-// courtesy of https://gist.github.com/gomfunkel/b1a046d729757120907c
-
-  CommunityTypes.Volts = function() {
-    Characteristic.call(this, 'Volts', CommunityTypes.Volts.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT16,
-      unit:     "V",
-      minValue: 0,
-      maxValue: 65535,
-      minStep:  1,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.Volts.UUID = 'E863F10A-079E-48FF-8F27-9C2605A29F52';
-  inherits(CommunityTypes.Volts, Characteristic);
-
-  CommunityTypes.Amperes = function() {
-    Characteristic.call(this, 'Amps', CommunityTypes.Amperes.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT16,
-      unit:     "A",
-      minValue: 0,
-      maxValue: 65535,
-      minStep:  1,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.Amperes.UUID = 'E863F126-079E-48FF-8F27-9C2605A29F52';
-  inherits(CommunityTypes.Amperes, Characteristic);
-
-  CommunityTypes.Watts = function() {
-    Characteristic.call(this, 'Consumption', CommunityTypes.Watts.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT16,
-      unit:     "W",
-      minValue: 0,
-      maxValue: 65535,
-      minStep:  1,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.Watts.UUID = 'E863F10D-079E-48FF-8F27-9C2605A29F52';
-  inherits(CommunityTypes.Watts, Characteristic);
-
-  CommunityTypes.VoltAmperes = function() {
-    Characteristic.call(this, 'Apparent Power', CommunityTypes.VoltAmperes.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT16,
-      unit:     "VA",
-      minValue: 0,
-      maxValue: 65535,
-      minStep:  1,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.VoltAmperes.UUID = 'E863F110-079E-48FF-8F27-9C2605A29F52';
-  inherits(CommunityTypes.VoltAmperes, Characteristic);
-
-  CommunityTypes.KilowattHours = function() {
-    Characteristic.call(this, 'Total Consumption', CommunityTypes.KilowattHours.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT32,
-      unit:     "kWh",
-      minValue: 0,
-      maxValue: 65535,
-      minStep:  1,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.KilowattHours.UUID = 'E863F10C-079E-48FF-8F27-9C2605A29F52';
-  inherits(CommunityTypes.KilowattHours, Characteristic);
-
-  CommunityTypes.KilowattVoltAmpereHour = function() {
-    Characteristic.call(this, 'Apparent Energy', CommunityTypes.KilowattVoltAmpereHour.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT32,
-      unit:     "kVAh",
-      minValue: 0,
-      maxValue: 65535,
-      minStep:  1,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.KilowattVoltAmpereHour.UUID = 'E863F127-079E-48FF-8F27-9C2605A29F52';
-  inherits(CommunityTypes.KilowattVoltAmpereHour, Characteristic);
-
-  CommunityTypes.BatteryLevel = function() {
-    Characteristic.call(this, 'Battery Level', CommunityTypes.BatteryLevel.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT16,
-      unit: Characteristic.Units.PERCENTAGE,
-      maxValue: 100,
-      minValue: 0,
-      minStep: 1,
-      perms: [ Characteristic.Perms.READ ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.BatteryLevel.UUID = 'E863F11B-079E-48FF-8F27-9C2605A29F52';
-  inherits(CommunityTypes.BatteryLevel, Characteristic);
-
-  CommunityTypes.EveAirQuality = function () {
-    Characteristic.call(this, 'Eve Air Quality', CommunityTypes.EveAirQuality.UUID);
-    this.setProps({
-      format: Characteristic.Formats.UINT16,
-      unit: "ppm",
-      maxValue: 5000,
-      minValue: 0,
-      minStep: 1,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ],
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.EveAirQuality.UUID = 'E863F10B-079E-48FF-8F27-9C2605A29F52';
-  inherits(CommunityTypes.EveAirQuality, Characteristic);
-
-
-// courtesy of https://github.com/ebaauw/homebridge-lib
-// i should probably submit a PR for everything here that isn't in that repo...
-
-  CommunityTypes.EveOpenDuration = function () {
-    Characteristic.call(this, 'Eve Open Duration', CommunityTypes.EveOpenDuration.UUID);
-    this.setProps({
-      format: Characteristic.Formats.UINT32,
-      unit: Characteristic.Units.SECONDS, // since last reset
-      perms: [Characteristic.Perms.READ, Characteristic.Perms.NOTIFY, Characteristic.Perms.WRITE]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.EveOpenDuration.UUID = 'E863F118-079E-48FF-8F27-9C2605A29F52';
-  inherits(CommunityTypes.EveOpenDuration, Characteristic);
-
-  CommunityTypes.EveClosedDuration = function () {
-    Characteristic.call(this, 'Eve Closed Duration', CommunityTypes.EveClosedDuration.UUID);
-    this.setProps({
-      format: Characteristic.Formats.UINT32,
-      unit: Characteristic.Units.SECONDS, // since last reset
-      perms: [Characteristic.Perms.READ, Characteristic.Perms.NOTIFY, Characteristic.Perms.WRITE]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.EveClosedDuration.UUID = 'E863F119-079E-48FF-8F27-9C2605A29F52';
-  inherits(CommunityTypes.EveClosedDuration, Characteristic);
-
-  CommunityTypes.EveLastActivation = function () {
-    Characteristic.call(this, 'Eve Last Activation', CommunityTypes.EveLastActivation.UUID);
-    this.setProps({
-      format: Characteristic.Formats.UINT32,
-      unit: Characteristic.Units.SECONDS, // since last reset
-      perms: [Characteristic.Perms.READ, Characteristic.Perms.NOTIFY]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.EveLastActivation.UUID = 'E863F11A-079E-48FF-8F27-9C2605A29F52';
-  inherits(CommunityTypes.EveLastActivation, Characteristic);
-
-  CommunityTypes.EveTimesOpened = function () {
-    Characteristic.call(this, 'Eve Times Opened', CommunityTypes.EveTimesOpened.UUID);
-    this.setProps({
-      format: Characteristic.Formats.UINT32,
-      perms: [Characteristic.Perms.READ, Characteristic.Perms.NOTIFY]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.EveTimesOpened.UUID = 'E863F129-079E-48FF-8F27-9C2605A29F52';
-  inherits(CommunityTypes.EveTimesOpened, Characteristic);
-
-  CommunityTypes.EveResetTotal = function () {
-    Characteristic.call(this, 'Eve Reset Total', CommunityTypes.EveResetTotal.UUID);
-    this.setProps({
-      format: Characteristic.Formats.UINT32,
-      unit: Characteristic.Units.SECONDS, // since 2001/01/01
-      perms: [Characteristic.Perms.READ, Characteristic.Perms.NOTIFY, Characteristic.Perms.WRITE]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.EveResetTotal.UUID = 'E863F112-079E-48FF-8F27-9C2605A29F52';
-  inherits(CommunityTypes.EveResetTotal, Characteristic);
-
-
-// courtesy of https://github.com/robi-van-kinobi/homebridge-cubesensors
-
-  CommunityTypes.AtmosphericPressureLevel = function () {
-    Characteristic.call(this, 'Barometric Pressure', CommunityTypes.AtmosphericPressureLevel.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT8,
-      unit:     "mbar",
-      minValue: 800,
-      maxValue: 1200,
-      minStep:  1,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.AtmosphericPressureLevel.UUID = '28FDA6BC-9C2A-4DEA-AAFD-B49DB6D155AB';
-  inherits(CommunityTypes.AtmosphericPressureLevel, Characteristic);
-
-  CommunityTypes.NoiseLevel = function () {
-    Characteristic.call(this, 'Noise Level', CommunityTypes.NoiseLevel.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT8,
-      unit:     "dB",
-      minValue: 0,
-      maxValue: 200,
-      minStep:  1,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.NoiseLevel.UUID = '2CD7B6FD-419A-4740-8995-E3BFE43735AB';
-  inherits(CommunityTypes.NoiseLevel, Characteristic);
-
-
-// courtesy of https://github.com/homespun/homebridge-platform-snmp
-
-  CommunityTypes.AirFlow = function () {
-    Characteristic.call(this, 'Air Flow', CommunityTypes.AirFlow.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT8,
-      unit:     "m/s",
-      minValue: 0,
-      maxValue: 135,
-      minStep:  1,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.AirFlow.UUID = '49C8AE5A-A3A5-41AB-BF1F-12D5654F9F41';
-  inherits(CommunityTypes.AirFlow, Characteristic);
-
-  CommunityTypes.NitrogenDioxideDetected = function () {
-    Characteristic.call(this, 'Nitrogen Dioxide Detected', CommunityTypes.NitrogenDioxideDetected.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT8,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.NitrogenDioxideDetected.UUID = 'D737B40A-3AF0-4316-950F-76090B98C5CF';
-  inherits(CommunityTypes.NitrogenDioxideDetected, Characteristic);
-
-  CommunityTypes.NitrogenDioxideDetected.NO2_LEVELS_NORMAL = 0;
-  CommunityTypes.NitrogenDioxideDetected.NO2_LEVELS_ABNORMAL = 1;
-
-  CommunityTypes.NitrogenDioxideLevel = function () {
-    Characteristic.call(this, 'Nitrogen Dioxide Level', CommunityTypes.NitrogenDioxideLevel.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.FLOAT,
-      unit:     "ppm",
-      minValue: 0,
-      maxValue: 1500,
-      minStep:  1,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.NitrogenDioxideLevel.UUID = 'B762A2AF-D9D0-4A79-814A-E9EBAB0ED290';
-  inherits(CommunityTypes.NitrogenDioxideLevel, Characteristic);
-
-  CommunityTypes.NitrogenDioxidePeakLevel = function () {
-    Characteristic.call(this, 'Nitrogen Dioxide Peak Level', CommunityTypes.NitrogenDioxidePeakLevel.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.FLOAT,
-      unit:     "ppm",
-      minValue: 0,
-      maxValue: 1500,
-      minStep:  1,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.NitrogenDioxidePeakLevel.UUID = 'B6594847-7B88-496C-A1A0-B7860F3D7601';
-  inherits(CommunityTypes.NitrogenDioxidePeakLevel, Characteristic);
-
-
-// courtesy of https://github.com/homespun/homebridge-platform-aqe
-
-  CommunityTypes.OzoneDetected = function () {
-    Characteristic.call(this, 'Ozone Detected', CommunityTypes.OzoneDetected.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT8,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.OzoneDetected.UUID = '0168FA60-5CF4-4314-AA45-0F84E389A093';
-  inherits(CommunityTypes.OzoneDetected, Characteristic);
-
-  CommunityTypes.OzoneDetected.O3_LEVELS_NORMAL = 0;
-  CommunityTypes.OzoneDetected.O3_LEVELS_ABNORMAL = 1;
-
-  CommunityTypes.OzoneLevel = function () {
-    Characteristic.call(this, 'Ozone Level', CommunityTypes.OzoneLevel.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.FLOAT,
-      unit:     "ppb",
-      minValue: 0,
-      maxValue: 1500,
-      minStep:  0.01,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.OzoneLevel.UUID = '03C17FD9-672E-42F5-8DD4-30C6822C739A';
-  inherits(CommunityTypes.OzoneLevel, Characteristic);
-
-  CommunityTypes.OzonePeakLevel = function () {
-    Characteristic.call(this, 'Ozone Peak Level', CommunityTypes.OzonePeakLevel.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.FLOAT,
-      unit:     "ppb",
-      minValue: 0,
-      maxValue: 1500,
-      minStep:  0.01,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.OzonePeakLevel.UUID = '550EE1FF-FC66-4BB6-A1C1-4B0A07109AE3';
-  inherits(CommunityTypes.OzonePeakLevel, Characteristic);
-
-  CommunityTypes.SodiumDioxideDetected = function () {
-    Characteristic.call(this, 'Sodium Dioxide Detected', CommunityTypes.SodiumDioxideDetected.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT8,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.SodiumDioxideDetected.UUID = '4D237DAB-1CB6-4D52-B446-4667F58F7D28';
-  inherits(CommunityTypes.SodiumDioxideDetected, Characteristic);
-
-  CommunityTypes.SodiumDioxideDetected.SO2_LEVELS_NORMAL = 0;
-  CommunityTypes.SodiumDioxideDetected.SO2_LEVELS_ABNORMAL = 1;
-
-  CommunityTypes.SodiumDioxideLevel = function () {
-    Characteristic.call(this, 'Sodium Dioxide Level', CommunityTypes.SodiumDioxideLevel.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.FLOAT,
-      unit:     "ppb",
-      minValue: 0,
-      maxValue: 1500,
-      minStep:  0.01,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.SodiumDioxideLevel.UUID = '66C4D315-FBEF-470E-9434-B047679F1141';
-  inherits(CommunityTypes.SodiumDioxideLevel, Characteristic);
-
-  CommunityTypes.SodiumDioxidePeakLevel = function () {
-    Characteristic.call(this, 'Sodium Dioxide Peak Level', CommunityTypes.SodiumDioxidePeakLevel.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.FLOAT,
-      unit:     "ppb",
-      minValue: 0,
-      maxValue: 1500,
-      minStep:  0.01,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.SodiumDioxidePeakLevel.UUID = '4CD6F648-2F92-43D8-86DF-0E8DE75E033B';
-  inherits(CommunityTypes.SodiumDioxidePeakLevel, Characteristic);
-
-  CommunityTypes.VolatileOrganicCompoundDetected = function () {
-    Characteristic.call(this, 'Volatile Organic Compound Detected', CommunityTypes.VolatileOrganicCompoundDetected.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT8,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.VolatileOrganicCompoundDetected.UUID = '65DBC0F5-C40B-4E04-ADED-DC70031B0B82';
-  inherits(CommunityTypes.VolatileOrganicCompoundDetected, Characteristic);
-
-  CommunityTypes.VolatileOrganicCompoundDetected.VOC_LEVELS_NORMAL = 0;
-  CommunityTypes.VolatileOrganicCompoundDetected.VOC_LEVELS_ABNORMAL = 1;
-
-  CommunityTypes.VolatileOrganicCompoundLevel = function () {
-    Characteristic.call(this, 'Volatile Organic Compound Level', CommunityTypes.VolatileOrganicCompoundLevel.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.FLOAT,
-      unit:     "ppb",
-      minValue: 0,
-      maxValue: 1500,
-      minStep:  0.01,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.VolatileOrganicCompoundLevel.UUID = '35C4C797-193D-4998-879F-A08514E87897';
-  inherits(CommunityTypes.VolatileOrganicCompoundLevel, Characteristic);
-
-  CommunityTypes.VolatileOrganicCompoundPeakLevel = function () {
-    Characteristic.call(this, 'Volatile Organic Compound Peak Level', CommunityTypes.VolatileOrganicCompoundPeakLevel.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.FLOAT,
-      unit:     "ppb",
-      minValue: 0,
-      maxValue: 1500,
-      minStep:  0.01,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.VolatileOrganicCompoundPeakLevel.UUID = 'A62CB784-1916-4BDF-B840-BDB9F8A264E9';
-  inherits(CommunityTypes.VolatileOrganicCompoundPeakLevel, Characteristic);
-
-  CommunityTypes.NotificationCode = function() {
-    Characteristic.call(this, 'Notification Code', CommunityTypes.NotificationCode.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT8,
-      maxValue: 255,
-      minValue: 0,
-      minStep: 1,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.WRITE, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = 255;
-  };
-  CommunityTypes.NotificationCode.UUID = '381C47A3-CB06-4177-8E3D-A1B4C22EB031';
-  inherits(CommunityTypes.NotificationCode, Characteristic);
-
-  CommunityTypes.NotificationText = function() {
-    Characteristic.call(this, 'Notification Text', CommunityTypes.NotificationText.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.STRING,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.NotificationText.UUID = 'e244ca80-813e-423a-86bd-02f293b857a0';
-  inherits(CommunityTypes.NotificationText, Characteristic);
-
-// used by Elgato Eve, number of seconds since the epoch...
-  CommunityTypes.LastEventTime = function() {
-    Characteristic.call(this, 'Last Event Time', CommunityTypes.LastEventTime.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT32,
-      perms: [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.LastEventTime.UUID = 'E863F11A-079E-48FF-8F27-9C2605A29F52';
-  inherits(CommunityTypes.LastEventTime, Characteristic);
-
-
-// courtesy of https://github.com/SeydX/homebridge-broadband
-
-  CommunityTypes.DownloadSpeed = function() {
-    Characteristic.call(this, 'Download Speed', CommunityTypes.DownloadSpeed.UUID);
-    this.setProps({
-      format: Characteristic.Formats.FLOAT,
-      unit: (options.units && options.units.DownloadSpeed) || 'Mbps',
-      maxValue: 1024,
-      minValue: 0,
-      minStep: 1,
-      perms: [Characteristic.Perms.READ, Characteristic.Perms.NOTIFY]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.DownloadSpeed.UUID = 'DA70DA1F-DA72-4DB3-81C2-99F158A15A9A';
-  inherits(CommunityTypes.DownloadSpeed, Characteristic);
-
-  CommunityTypes.UploadSpeed = function() {
-    Characteristic.call(this, 'Upload Speed', CommunityTypes.UploadSpeed.UUID);
-    this.setProps({
-      format: Characteristic.Formats.FLOAT,
-      unit: 'Mbps',
-      maxValue: 1024,
-      minValue: 0,
-      minStep: 1,
-      perms: [Characteristic.Perms.READ, Characteristic.Perms.NOTIFY]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.UploadSpeed.UUID = 'AB74289E-D516-4A12-B2AE-1B32A74C035F';
-  inherits(CommunityTypes.UploadSpeed, Characteristic);
-
-  CommunityTypes.Ping = function() {
-    Characteristic.call(this, 'Ping', CommunityTypes.Ping.UUID);
-    this.setProps({
-      format: Characteristic.Formats.INT,
-      unit: 'ms',
-      maxValue: 999,
-      minValue: 0,
-      minStep: 1,
-      perms: [Characteristic.Perms.READ, Characteristic.Perms.NOTIFY]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.Ping.UUID = 'CC65A09A-E052-410C-981D-C11BDE2C3F60';
-  inherits(CommunityTypes.Ping, Characteristic);
-
-  CommunityTypes.Latency = function() {
-    Characteristic.call(this, 'Latency', CommunityTypes.Latency.UUID);
-    this.setProps({
-      format: Characteristic.Formats.INT,
-      unit: 'ms',
-      maxValue: 999,
-      minValue: 0,
-      minStep: 0.001,
-      perms: [Characteristic.Perms.READ, Characteristic.Perms.NOTIFY]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.Latency.UUID = '60EC80F9-F799-4E8E-B613-098E7EBCBB0B';
-  inherits(CommunityTypes.Latency, Characteristic);
-
-
-  // Services
-
-  CommunityTypes.AudioDeviceService = function(displayName, subtype) {
-    Service.call(this, displayName, CommunityTypes.AudioDeviceService.UUID, subtype);
-
-    // Required Characteristics
-    this.addCharacteristic(CommunityTypes.AudioVolume);
-
-    // Optional Characteristics
-    this.addOptionalCharacteristic(CommunityTypes.Muting);
-    this.addOptionalCharacteristic(Characteristic.Name);
-  };
-  CommunityTypes.AudioDeviceService.UUID = '00000001-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.AudioDeviceService, Service);
-
-  CommunityTypes.PlaybackDeviceService = function(displayName, subtype) {
-    Service.call(this, displayName, CommunityTypes.PlaybackDeviceService.UUID, subtype);
-
-    // Required Characteristics
-    this.addCharacteristic(CommunityTypes.PlaybackState);
-
-    // Optional Characteristics
-    this.addOptionalCharacteristic(CommunityTypes.SkipForward);
-    this.addOptionalCharacteristic(CommunityTypes.SkipBackward);
-    this.addOptionalCharacteristic(CommunityTypes.ShuffleMode);
-    this.addOptionalCharacteristic(CommunityTypes.RepeatMode);
-    this.addOptionalCharacteristic(CommunityTypes.PlaybackSpeed);
-    this.addOptionalCharacteristic(CommunityTypes.MediaCurrentPosition);
-    this.addOptionalCharacteristic(CommunityTypes.MediaItemName);
-    this.addOptionalCharacteristic(CommunityTypes.MediaItemAlbumName);
-    this.addOptionalCharacteristic(CommunityTypes.MediaItemArtist);
-    this.addOptionalCharacteristic(CommunityTypes.MediaItemDuration);
-    this.addOptionalCharacteristic(Characteristic.Name);
-    // Artwork characteristics...would be better reported in a separate service?
-    this.addOptionalCharacteristic(CommunityTypes.StillImage);
-    this.addOptionalCharacteristic(CommunityTypes.MediaTypeIdentifier);
-    this.addOptionalCharacteristic(CommunityTypes.MediaWidth);
-    this.addOptionalCharacteristic(CommunityTypes.MediaHeight);
-  };
-  CommunityTypes.PlaybackDeviceService.UUID = '00000002-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.PlaybackDeviceService, Service);
-
-  // A media information service that has no playback controls, for e.g. DAB radio...
-  CommunityTypes.MediaInformationService = function(displayName, subtype) {
-    Service.call(this, displayName, CommunityTypes.MediaInformationService.UUID, subtype);
-
-    // Required Characteristics
-    this.addCharacteristic(CommunityTypes.MediaItemName);
-
-    // Optional Characteristics
-    this.addOptionalCharacteristic(CommunityTypes.MediaItemAlbumName);
-    this.addOptionalCharacteristic(CommunityTypes.MediaItemArtist);
-    this.addOptionalCharacteristic(CommunityTypes.MediaItemDuration);
-    this.addOptionalCharacteristic(CommunityTypes.MediaCurrentPosition);
-    this.addOptionalCharacteristic(Characteristic.Name);
-    // Artwork characteristics...would be better reported in a separate service?
-    this.addOptionalCharacteristic(CommunityTypes.StillImage);
-    this.addOptionalCharacteristic(CommunityTypes.MediaTypeIdentifier);
-    this.addOptionalCharacteristic(CommunityTypes.MediaWidth);
-    this.addOptionalCharacteristic(CommunityTypes.MediaHeight);
-  };
-  CommunityTypes.MediaInformationService.UUID = '00000003-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.MediaInformationService, Service);
-
-  CommunityTypes.StillImageService = function(displayName, subtype) {
-    Service.call(this, displayName, CommunityTypes.StillImageService.UUID, subtype);
-
-    // Required Characteristics
-    this.addCharacteristic(CommunityTypes.StillImage);
-    this.addCharacteristic(CommunityTypes.MediaTypeIdentifier);
-
-    // Optional Characteristics
-    this.addOptionalCharacteristic(CommunityTypes.MediaWidth);
-    this.addOptionalCharacteristic(CommunityTypes.MediaHeight);
-    this.addOptionalCharacteristic(Characteristic.Name);
-  };
-  CommunityTypes.StillImageService.UUID = '00000004-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.StillImageService, Service);
-
-  CommunityTypes.SecurityCameraService = function(displayName, subtype) {
-    Service.call(this, displayName, CommunityTypes.SecurityCameraService.UUID, subtype);
-
-    // Required Characteristics
-    this.addCharacteristic(CommunityTypes.StillImageService);
-    this.addCharacteristic(CommunityTypes.MediaTypeIdentifier);
-
-    // Optional Characteristics
-    this.addOptionalCharacteristic(CommunityTypes.Timestamp);
-    this.addOptionalCharacteristic(CommunityTypes.MediaWidth);
-    this.addOptionalCharacteristic(CommunityTypes.MediaHeight);
-    this.addOptionalCharacteristic(CommunityTypes.VideoDataURL);
-    this.addOptionalCharacteristic(CommunityTypes.AudioDataURL);
-    this.addOptionalCharacteristic(Characteristic.MotionDetected);
-    this.addOptionalCharacteristic(Characteristic.StatusTampered);
-    this.addOptionalCharacteristic(Characteristic.Name);
-  };
-  CommunityTypes.SecurityCameraService.UUID = '00000005-0000-1000-8000-135D67EC4377';
-  inherits(CommunityTypes.SecurityCameraService, Service);
-
-
-// courtesy of https://github.com/robi-van-kinobi/homebridge-cubesensors
-
-  CommunityTypes.AtmosphericPressureSensor = function (displayName, subtype) {
-    Service.call(this, displayName, CommunityTypes.AtmosphericPressureSensor.UUID, subtype);
-
-    // Required Characteristics
-    this.addCharacteristic(CommunityTypes.AtmosphericPressureLevel);
-
-    // Optional Characteristics
-    this.addOptionalCharacteristic(Characteristic.StatusActive);
-    this.addOptionalCharacteristic(Characteristic.StatusFault);
-    this.addOptionalCharacteristic(Characteristic.StatusLowBattery);
-    this.addOptionalCharacteristic(Characteristic.StatusTampered);
-    this.addOptionalCharacteristic(Characteristic.Name);
-  };
-  CommunityTypes.AtmosphericPressureSensor.UUID = 'B77831FD-D66A-46A4-B66D-FD7EE8DFE3CE';
-  inherits(CommunityTypes.AtmosphericPressureSensor, Service);
-
-  CommunityTypes.NoiseLevelSensor = function (displayName, subtype) {
-    Service.call(this, displayName, CommunityTypes.NoiseLevelSensor.UUID, subtype);
-
-    // Required Characteristics
-    this.addCharacteristic(CommunityTypes.NoiseLevel);
-
-    // Optional Characteristics
-    this.addOptionalCharacteristic(Characteristic.StatusActive);
-    this.addOptionalCharacteristic(Characteristic.StatusFault);
-    this.addOptionalCharacteristic(Characteristic.StatusLowBattery);
-    this.addOptionalCharacteristic(Characteristic.StatusTampered);
-    this.addOptionalCharacteristic(Characteristic.Name);
-  };
-  CommunityTypes.NoiseLevelSensor.UUID = '28FDA6BC-9C2A-4DEA-AAFD-B49DB6D155AB';
-  inherits(CommunityTypes.NoiseLevelSensor, Service);
-
-
-// courtesy of https://github.com/ToddGreenfield/homebridge-nut
-
-  CommunityTypes.InputVoltageAC = function() {
-    Characteristic.call(this, 'Input Voltage AC', CommunityTypes.InputVoltageAC.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.Float,
-      unit:     "V",
-      minValue: 0,
-      maxValue: 65535,
-      minStep:  0.01,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.InputVoltageAC.UUID = UUID.generate('CommunityTypes:usagedevice:InputVoltageAC');
-  inherits(CommunityTypes.InputVoltageAC, Characteristic);
-  
-  CommunityTypes.OutputVoltageAC = function() {
-    Characteristic.call(this, 'Output Voltage AC', CommunityTypes.OutputVoltageAC.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.Float,
-      unit:     "V",
-      minValue: 0,
-      maxValue: 65535,
-      minStep:  0.01,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.OutputVoltageAC.UUID = UUID.generate('CommunityTypes:usagedevice:OutputVoltageAC');
-  inherits(CommunityTypes.OutputVoltageAC, Characteristic);
-  
-  CommunityTypes.BatteryVoltageDC = function() {
-    Characteristic.call(this, 'Battery Voltage DC', CommunityTypes.BatteryVoltageDC.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.Float,
-      unit:     "V",
-      minValue: 0,
-      maxValue: 65535,
-      minStep:  0.01,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.BatteryVoltageDC.UUID = UUID.generate('CommunityTypes:usagedevice:BatteryVoltageDC');
-  inherits(CommunityTypes.BatteryVoltageDC, Characteristic);
-  
-  CommunityTypes.UPSLoadPercent = function() {
-    Characteristic.call(this, 'UPS Load', CommunityTypes.UPSLoadPercent.UUID);
-    this.setProps({
-      format:   Characteristic.Formats.UINT8,
-      unit: Characteristic.Units.PERCENTAGE,
-      minValue: 0,
-      maxValue: 100,
-      minStep:  1,
-      perms:    [ Characteristic.Perms.READ, Characteristic.Perms.NOTIFY ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  CommunityTypes.UPSLoadPercent.UUID = UUID.generate('CommunityTypes:usagedevice:UPSLoadPercent');
-  inherits(CommunityTypes.UPSLoadPercent, Characteristic);
-
-
-// courtesy of https://github.com/homespun/homebridge-platform-snmp
-
-  CommunityTypes.AirFlowSensor = function (displayName, subtype) {
-    Service.call(this, displayName, CommunityTypes.AirFlowSensor.UUID, subtype);
-
-    // Required Characteristics
-    this.addCharacteristic(CommunityTypes.AirFlow);
-
-    // Optional Characteristics
-    this.addOptionalCharacteristic(Characteristic.StatusActive);
-    this.addOptionalCharacteristic(Characteristic.StatusFault);
-    this.addOptionalCharacteristic(Characteristic.StatusLowBattery);
-    this.addOptionalCharacteristic(Characteristic.StatusTampered);
-    this.addOptionalCharacteristic(Characteristic.Name);
-  };
-  CommunityTypes.AirFlowSensor.UUID = 'AF5C192E-420F-4A13-AB67-B8F3968A4935';
-  inherits(CommunityTypes.AirFlowSensor, Service);
-
-  CommunityTypes.NitrogenDioxideSensor = function (displayName, subtype) {
-    Service.call(this, displayName, CommunityTypes.NitrogenDioxideSensor.UUID, subtype);
-
-    // Required Characteristics
-    this.addCharacteristic(CommunityTypes.NitrogenDioxideDetected);
-
-    // Optional Characteristics
-    this.addOptionalCharacteristic(Characteristic.StatusActive);
-    this.addOptionalCharacteristic(Characteristic.StatusFault);
-    this.addOptionalCharacteristic(Characteristic.StatusLowBattery);
-    this.addOptionalCharacteristic(CommunityTypes.NitrogenDioxideLevel);
-    this.addOptionalCharacteristic(CommunityTypes.NitrogenDioxidePeakLevel);
-    this.addOptionalCharacteristic(Characteristic.StatusTampered);
-    this.addOptionalCharacteristic(Characteristic.Name);
-  };
-  CommunityTypes.NitrogenDioxideSensor.UUID = '9F6B797D-D43B-4C88-9AA0-57018AB8A91E';
-  inherits(CommunityTypes.NitrogenDioxideSensor, Service);
-
-
-// courtesy of https://github.com/homespun/homebridge-platform-aqe
-
-  CommunityTypes.OzoneSensor = function (displayName, subtype) {
-    Service.call(this, displayName, CommunityTypes.OzoneSensor.UUID, subtype);
-
-    // Required Characteristics
-    this.addCharacteristic(CommunityTypes.OzoneDetected);
-
-    // Optional Characteristics
-    this.addOptionalCharacteristic(Characteristic.StatusActive);
-    this.addOptionalCharacteristic(Characteristic.StatusFault);
-    this.addOptionalCharacteristic(Characteristic.StatusLowBattery);
-    this.addOptionalCharacteristic(CommunityTypes.OzoneLevel);
-    this.addOptionalCharacteristic(CommunityTypes.OzonePeakLevel);
-    this.addOptionalCharacteristic(Characteristic.StatusTampered);
-    this.addOptionalCharacteristic(Characteristic.Name);
-  };
-  CommunityTypes.OzoneSensor.UUID = 'B91C2BD6-D071-4F49-A23B-20721AC6CCEB';
-  inherits(CommunityTypes.OzoneSensor, Service);
-
-  CommunityTypes.SodiumDioxideSensor = function (displayName, subtype) {
-    Service.call(this, displayName, CommunityTypes.SodiumDioxideSensor.UUID, subtype);
-
-    // Required Characteristics
-    this.addCharacteristic(CommunityTypes.SodiumDioxideDetected);
-
-    // Optional Characteristics
-    this.addOptionalCharacteristic(Characteristic.StatusActive);
-    this.addOptionalCharacteristic(Characteristic.StatusFault);
-    this.addOptionalCharacteristic(Characteristic.StatusLowBattery);
-    this.addOptionalCharacteristic(CommunityTypes.SodiumDioxideLevel);
-    this.addOptionalCharacteristic(CommunityTypes.SodiumDioxidePeakLevel);
-    this.addOptionalCharacteristic(Characteristic.StatusTampered);
-    this.addOptionalCharacteristic(Characteristic.Name);
-  };
-  CommunityTypes.SodiumDioxideSensor.UUID = 'FE7CFB1F-12D0-405D-86FD-7E268D65C453';
-  inherits(CommunityTypes.SodiumDioxideSensor, Service);
-
-  CommunityTypes.VolatileOrganicCompoundSensor = function (displayName, subtype) {
-    Service.call(this, displayName, CommunityTypes.VolatileOrganicCompoundSensor.UUID, subtype);
-
-    // Required Characteristics
-    this.addCharacteristic(CommunityTypes.VolatileOrganicCompoundDetected);
-
-    // Optional Characteristics
-    this.addOptionalCharacteristic(Characteristic.StatusActive);
-    this.addOptionalCharacteristic(Characteristic.StatusFault);
-    this.addOptionalCharacteristic(Characteristic.StatusLowBattery);
-    this.addOptionalCharacteristic(CommunityTypes.VolatileOrganicCompoundLevel);
-    this.addOptionalCharacteristic(CommunityTypes.VolatileOrganicCompoundPeakLevel);
-    this.addOptionalCharacteristic(Characteristic.StatusTampered);
-    this.addOptionalCharacteristic(Characteristic.Name);
-  };
-  CommunityTypes.VolatileOrganicCompoundSensor.UUID = '776E34BC-1660-46EC-A33D-2DFE5B958699';
-  inherits(CommunityTypes.VolatileOrganicCompoundSensor, Service);
-
-  CommunityTypes.NotificationService = function (displayName, subtype) {
-    Service.call(this, displayName, CommunityTypes.NotificationService.UUID, subtype);
-
-    // Required Characteristics
-    this.addCharacteristic(CommunityTypes.NotificationCode);
-    this.addCharacteristic(CommunityTypes.NotificationText);
-
-    // Optional Characteristics
-    this.addOptionalCharacteristic(Characteristic.Name);
-    this.addOptionalCharacteristic(CommunityTypes.LastEventTime);
-  };
-  CommunityTypes.NotificationService.UUID = '074D8CE9-5B4B-48D5-9990-D98850C2F3FE';
-  inherits(CommunityTypes.NotificationService, Service);
-
-
-  return CommunityTypes;
-};
-
-
-/***/ }),
-
 /***/ "../node_modules/asn1.js/lib/asn1.js":
 /*!*******************************************!*\
   !*** ../node_modules/asn1.js/lib/asn1.js ***!
@@ -19140,10 +18050,10 @@ utils.intFromLE = intFromLE;
 /*!*********************************************!*\
   !*** ../node_modules/elliptic/package.json ***!
   \*********************************************/
-/*! exports provided: _from, _id, _inBundle, _integrity, _location, _phantomChildren, _requested, _requiredBy, _resolved, _shasum, _spec, _where, author, bugs, bundleDependencies, dependencies, deprecated, description, devDependencies, files, homepage, keywords, license, main, name, repository, scripts, version, default */
+/*! exports provided: _args, _development, _from, _id, _inBundle, _integrity, _location, _phantomChildren, _requested, _requiredBy, _resolved, _spec, _where, author, bugs, dependencies, description, devDependencies, files, homepage, keywords, license, main, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"_from":"elliptic@^6.0.0","_id":"elliptic@6.4.1","_inBundle":false,"_integrity":"sha512-BsXLz5sqX8OHcsh7CqBMztyXARmGQ3LWPtGjJi6DiJHq5C/qvi9P3OqgswKSDftbu8+IoI/QDTAm2fFnQ9SZSQ==","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"range","registry":true,"raw":"elliptic@^6.0.0","name":"elliptic","escapedName":"elliptic","rawSpec":"^6.0.0","saveSpec":null,"fetchSpec":"^6.0.0"},"_requiredBy":["/browserify-sign","/create-ecdh"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.1.tgz","_shasum":"c2d0b7776911b86722c632c3c06c60f2f819939a","_spec":"elliptic@^6.0.0","_where":"/Users/jensweigele/Documents/projects/ioBroker.yahka/node_modules/browserify-sign","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"bundleDependencies":false,"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"deprecated":false,"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.1"};
+module.exports = {"_args":[["elliptic@6.4.1","/home/anderl/Development/ioBroker.yahka"]],"_development":true,"_from":"elliptic@6.4.1","_id":"elliptic@6.4.1","_inBundle":false,"_integrity":"sha512-BsXLz5sqX8OHcsh7CqBMztyXARmGQ3LWPtGjJi6DiJHq5C/qvi9P3OqgswKSDftbu8+IoI/QDTAm2fFnQ9SZSQ==","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@6.4.1","name":"elliptic","escapedName":"elliptic","rawSpec":"6.4.1","saveSpec":null,"fetchSpec":"6.4.1"},"_requiredBy":["/browserify-sign","/create-ecdh"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.1.tgz","_spec":"6.4.1","_where":"/home/anderl/Development/ioBroker.yahka","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.1"};
 
 /***/ }),
 
@@ -19526,7 +18436,7 @@ module.exports = EVP_BytesToKey
 "use strict";
 
 
-var inherits = __webpack_require__(/*! util */ "../node_modules/util/util.js").inherits;
+var inherits = __webpack_require__(/*! util */ "../node_modules/node-libs-browser/node_modules/util/util.js").inherits;
 var EventEmitter = __webpack_require__(/*! events */ "../node_modules/events/events.js").EventEmitter;
 var once = __webpack_require__(/*! ./util/once */ "../node_modules/hap-nodejs/lib/util/once.js").once;
 var Decimal = __webpack_require__(/*! decimal.js */ "../node_modules/decimal.js/decimal.mjs");
@@ -19841,6 +18751,8 @@ Characteristic.prototype.setValue = function(newValue, callback, context, connec
 
   newValue = this.validateValue(newValue); //validateValue returns a value that has be cooerced into a valid value.
 
+  var oldValue = this.value;
+
   if (this.listeners('set').length > 0) {
 
     // allow a listener to handle the setting of this value, and wait for completion
@@ -19854,7 +18766,6 @@ Characteristic.prototype.setValue = function(newValue, callback, context, connec
         if (newValue === undefined || newValue === null)
           newValue = this.getDefaultValue();
         // setting the value was a success; so we can cache it now
-        var oldValue = this.value;
         this.value = newValue;
         if (callback) callback();
 
@@ -19869,7 +18780,6 @@ Characteristic.prototype.setValue = function(newValue, callback, context, connec
     if (newValue === undefined || newValue === null)
       newValue = this.getDefaultValue();
     // no one is listening to the 'set' event, so just assign the value blindly
-    var oldValue = this.value;
     this.value = newValue;
     if (callback) callback();
 
@@ -20030,7 +18940,7 @@ function decimalPlaces(num) {
 "use strict";
 
 
-var inherits = __webpack_require__(/*! util */ "../node_modules/util/util.js").inherits;
+var inherits = __webpack_require__(/*! util */ "../node_modules/node-libs-browser/node_modules/util/util.js").inherits;
 var clone = __webpack_require__(/*! ./util/clone */ "../node_modules/hap-nodejs/lib/util/clone.js").clone;
 var EventEmitter = __webpack_require__(/*! events */ "../node_modules/events/events.js").EventEmitter;
 var Characteristic = __webpack_require__(/*! ./Characteristic */ "../node_modules/hap-nodejs/lib/Characteristic.js").Characteristic;
@@ -20325,7 +19235,7 @@ Service.prototype._sideloadCharacteristics = function (targetCharacteristics) {
 
 // Removed from new HAS
 
-var inherits = __webpack_require__(/*! util */ "../node_modules/util/util.js").inherits;
+var inherits = __webpack_require__(/*! util */ "../node_modules/node-libs-browser/node_modules/util/util.js").inherits;
 var Characteristic = __webpack_require__(/*! ../Characteristic */ "../node_modules/hap-nodejs/lib/Characteristic.js").Characteristic;
 var Service = __webpack_require__(/*! ../Service */ "../node_modules/hap-nodejs/lib/Service.js").Service;
 
@@ -20948,7 +19858,7 @@ Service.TunneledBTLEAccessoryService.UUID = '00000056-0000-1000-8000-0026BB76529
 
 // Manually created from metadata in HomeKitDaemon
 
-var inherits = __webpack_require__(/*! util */ "../node_modules/util/util.js").inherits;
+var inherits = __webpack_require__(/*! util */ "../node_modules/node-libs-browser/node_modules/util/util.js").inherits;
 var Characteristic = __webpack_require__(/*! ../Characteristic */ "../node_modules/hap-nodejs/lib/Characteristic.js").Characteristic;
 var Service = __webpack_require__(/*! ../Service */ "../node_modules/hap-nodejs/lib/Service.js").Service;
 
@@ -21450,7 +20360,7 @@ Service.TelevisionSpeaker.UUID = '00000113-0000-1000-8000-0026BB765291';
 
 // THIS FILE IS AUTO-GENERATED - DO NOT MODIFY
 
-var inherits = __webpack_require__(/*! util */ "../node_modules/util/util.js").inherits;
+var inherits = __webpack_require__(/*! util */ "../node_modules/node-libs-browser/node_modules/util/util.js").inherits;
 var Characteristic = __webpack_require__(/*! ../Characteristic */ "../node_modules/hap-nodejs/lib/Characteristic.js").Characteristic;
 var Service = __webpack_require__(/*! ../Service */ "../node_modules/hap-nodejs/lib/Service.js").Service;
 
@@ -29042,6 +27952,620 @@ function isnan (val) {
 
 /***/ }),
 
+/***/ "../node_modules/node-libs-browser/node_modules/util/support/isBufferBrowser.js":
+/*!**************************************************************************************!*\
+  !*** ../node_modules/node-libs-browser/node_modules/util/support/isBufferBrowser.js ***!
+  \**************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function isBuffer(arg) {
+  return arg && typeof arg === 'object'
+    && typeof arg.copy === 'function'
+    && typeof arg.fill === 'function'
+    && typeof arg.readUInt8 === 'function';
+}
+
+/***/ }),
+
+/***/ "../node_modules/node-libs-browser/node_modules/util/util.js":
+/*!*******************************************************************!*\
+  !*** ../node_modules/node-libs-browser/node_modules/util/util.js ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var formatRegExp = /%[sdj%]/g;
+exports.format = function(f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
+  }
+
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function(x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s': return String(args[i++]);
+      case '%d': return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
+        }
+      default:
+        return x;
+    }
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
+};
+
+
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function(fn, msg) {
+  // Allow for deprecating things in the process of starting up.
+  if (isUndefined(global.process)) {
+    return function() {
+      return exports.deprecate(fn, msg).apply(this, arguments);
+    };
+  }
+
+  if (process.noDeprecation === true) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+
+var debugs = {};
+var debugEnviron;
+exports.debuglog = function(set) {
+  if (isUndefined(debugEnviron))
+    debugEnviron = process.env.NODE_DEBUG || '';
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+      var pid = process.pid;
+      debugs[set] = function() {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function() {};
+    }
+  }
+  return debugs[set];
+};
+
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold' : [1, 22],
+  'italic' : [3, 23],
+  'underline' : [4, 24],
+  'inverse' : [7, 27],
+  'white' : [37, 39],
+  'grey' : [90, 39],
+  'black' : [30, 39],
+  'blue' : [34, 39],
+  'cyan' : [36, 39],
+  'green' : [32, 39],
+  'magenta' : [35, 39],
+  'red' : [31, 39],
+  'yellow' : [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+           '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
+}
+
+
+function stylizeNoColor(str, styleType) {
+  return str;
+}
+
+
+function arrayToHash(array) {
+  var hash = {};
+
+  array.forEach(function(val, idx) {
+    hash[val] = true;
+  });
+
+  return hash;
+}
+
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect &&
+      value &&
+      isFunction(value.inspect) &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
+
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value)
+      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value))
+    return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                             .replace(/'/g, "\\'")
+                                             .replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value))
+    return ctx.stylize('' + value, 'number');
+  if (isBoolean(value))
+    return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value))
+    return ctx.stylize('null', 'null');
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = __webpack_require__(/*! ./support/isBuffer */ "../node_modules/node-libs-browser/node_modules/util/support/isBufferBrowser.js");
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()),
+              pad(d.getMinutes()),
+              pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function() {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+};
+
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = __webpack_require__(/*! inherits */ "../node_modules/inherits/inherits_browser.js");
+
+exports._extend = function(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../webpack/buildin/global.js */ "../node_modules/webpack/buildin/global.js"), __webpack_require__(/*! ./../../../process/browser.js */ "../node_modules/process/browser.js")))
+
+/***/ }),
+
 /***/ "../node_modules/parse-asn1/aesid.json":
 /*!*********************************************!*\
   !*** ../node_modules/parse-asn1/aesid.json ***!
@@ -34816,620 +34340,6 @@ function config (name) {
 
 /***/ }),
 
-/***/ "../node_modules/util/support/isBufferBrowser.js":
-/*!*******************************************************!*\
-  !*** ../node_modules/util/support/isBufferBrowser.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function isBuffer(arg) {
-  return arg && typeof arg === 'object'
-    && typeof arg.copy === 'function'
-    && typeof arg.fill === 'function'
-    && typeof arg.readUInt8 === 'function';
-}
-
-/***/ }),
-
-/***/ "../node_modules/util/util.js":
-/*!************************************!*\
-  !*** ../node_modules/util/util.js ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-var formatRegExp = /%[sdj%]/g;
-exports.format = function(f) {
-  if (!isString(f)) {
-    var objects = [];
-    for (var i = 0; i < arguments.length; i++) {
-      objects.push(inspect(arguments[i]));
-    }
-    return objects.join(' ');
-  }
-
-  var i = 1;
-  var args = arguments;
-  var len = args.length;
-  var str = String(f).replace(formatRegExp, function(x) {
-    if (x === '%%') return '%';
-    if (i >= len) return x;
-    switch (x) {
-      case '%s': return String(args[i++]);
-      case '%d': return Number(args[i++]);
-      case '%j':
-        try {
-          return JSON.stringify(args[i++]);
-        } catch (_) {
-          return '[Circular]';
-        }
-      default:
-        return x;
-    }
-  });
-  for (var x = args[i]; i < len; x = args[++i]) {
-    if (isNull(x) || !isObject(x)) {
-      str += ' ' + x;
-    } else {
-      str += ' ' + inspect(x);
-    }
-  }
-  return str;
-};
-
-
-// Mark that a method should not be used.
-// Returns a modified function which warns once by default.
-// If --no-deprecation is set, then it is a no-op.
-exports.deprecate = function(fn, msg) {
-  // Allow for deprecating things in the process of starting up.
-  if (isUndefined(global.process)) {
-    return function() {
-      return exports.deprecate(fn, msg).apply(this, arguments);
-    };
-  }
-
-  if (process.noDeprecation === true) {
-    return fn;
-  }
-
-  var warned = false;
-  function deprecated() {
-    if (!warned) {
-      if (process.throwDeprecation) {
-        throw new Error(msg);
-      } else if (process.traceDeprecation) {
-        console.trace(msg);
-      } else {
-        console.error(msg);
-      }
-      warned = true;
-    }
-    return fn.apply(this, arguments);
-  }
-
-  return deprecated;
-};
-
-
-var debugs = {};
-var debugEnviron;
-exports.debuglog = function(set) {
-  if (isUndefined(debugEnviron))
-    debugEnviron = process.env.NODE_DEBUG || '';
-  set = set.toUpperCase();
-  if (!debugs[set]) {
-    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
-      var pid = process.pid;
-      debugs[set] = function() {
-        var msg = exports.format.apply(exports, arguments);
-        console.error('%s %d: %s', set, pid, msg);
-      };
-    } else {
-      debugs[set] = function() {};
-    }
-  }
-  return debugs[set];
-};
-
-
-/**
- * Echos the value of a value. Trys to print the value out
- * in the best way possible given the different types.
- *
- * @param {Object} obj The object to print out.
- * @param {Object} opts Optional options object that alters the output.
- */
-/* legacy: obj, showHidden, depth, colors*/
-function inspect(obj, opts) {
-  // default options
-  var ctx = {
-    seen: [],
-    stylize: stylizeNoColor
-  };
-  // legacy...
-  if (arguments.length >= 3) ctx.depth = arguments[2];
-  if (arguments.length >= 4) ctx.colors = arguments[3];
-  if (isBoolean(opts)) {
-    // legacy...
-    ctx.showHidden = opts;
-  } else if (opts) {
-    // got an "options" object
-    exports._extend(ctx, opts);
-  }
-  // set default options
-  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
-  if (isUndefined(ctx.depth)) ctx.depth = 2;
-  if (isUndefined(ctx.colors)) ctx.colors = false;
-  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
-  if (ctx.colors) ctx.stylize = stylizeWithColor;
-  return formatValue(ctx, obj, ctx.depth);
-}
-exports.inspect = inspect;
-
-
-// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
-inspect.colors = {
-  'bold' : [1, 22],
-  'italic' : [3, 23],
-  'underline' : [4, 24],
-  'inverse' : [7, 27],
-  'white' : [37, 39],
-  'grey' : [90, 39],
-  'black' : [30, 39],
-  'blue' : [34, 39],
-  'cyan' : [36, 39],
-  'green' : [32, 39],
-  'magenta' : [35, 39],
-  'red' : [31, 39],
-  'yellow' : [33, 39]
-};
-
-// Don't use 'blue' not visible on cmd.exe
-inspect.styles = {
-  'special': 'cyan',
-  'number': 'yellow',
-  'boolean': 'yellow',
-  'undefined': 'grey',
-  'null': 'bold',
-  'string': 'green',
-  'date': 'magenta',
-  // "name": intentionally not styling
-  'regexp': 'red'
-};
-
-
-function stylizeWithColor(str, styleType) {
-  var style = inspect.styles[styleType];
-
-  if (style) {
-    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
-           '\u001b[' + inspect.colors[style][1] + 'm';
-  } else {
-    return str;
-  }
-}
-
-
-function stylizeNoColor(str, styleType) {
-  return str;
-}
-
-
-function arrayToHash(array) {
-  var hash = {};
-
-  array.forEach(function(val, idx) {
-    hash[val] = true;
-  });
-
-  return hash;
-}
-
-
-function formatValue(ctx, value, recurseTimes) {
-  // Provide a hook for user-specified inspect functions.
-  // Check that value is an object with an inspect function on it
-  if (ctx.customInspect &&
-      value &&
-      isFunction(value.inspect) &&
-      // Filter out the util module, it's inspect function is special
-      value.inspect !== exports.inspect &&
-      // Also filter out any prototype objects using the circular check.
-      !(value.constructor && value.constructor.prototype === value)) {
-    var ret = value.inspect(recurseTimes, ctx);
-    if (!isString(ret)) {
-      ret = formatValue(ctx, ret, recurseTimes);
-    }
-    return ret;
-  }
-
-  // Primitive types cannot have properties
-  var primitive = formatPrimitive(ctx, value);
-  if (primitive) {
-    return primitive;
-  }
-
-  // Look up the keys of the object.
-  var keys = Object.keys(value);
-  var visibleKeys = arrayToHash(keys);
-
-  if (ctx.showHidden) {
-    keys = Object.getOwnPropertyNames(value);
-  }
-
-  // IE doesn't make error fields non-enumerable
-  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
-  if (isError(value)
-      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
-    return formatError(value);
-  }
-
-  // Some type of object without properties can be shortcutted.
-  if (keys.length === 0) {
-    if (isFunction(value)) {
-      var name = value.name ? ': ' + value.name : '';
-      return ctx.stylize('[Function' + name + ']', 'special');
-    }
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    }
-    if (isDate(value)) {
-      return ctx.stylize(Date.prototype.toString.call(value), 'date');
-    }
-    if (isError(value)) {
-      return formatError(value);
-    }
-  }
-
-  var base = '', array = false, braces = ['{', '}'];
-
-  // Make Array say that they are Array
-  if (isArray(value)) {
-    array = true;
-    braces = ['[', ']'];
-  }
-
-  // Make functions say that they are functions
-  if (isFunction(value)) {
-    var n = value.name ? ': ' + value.name : '';
-    base = ' [Function' + n + ']';
-  }
-
-  // Make RegExps say that they are RegExps
-  if (isRegExp(value)) {
-    base = ' ' + RegExp.prototype.toString.call(value);
-  }
-
-  // Make dates with properties first say the date
-  if (isDate(value)) {
-    base = ' ' + Date.prototype.toUTCString.call(value);
-  }
-
-  // Make error with message first say the error
-  if (isError(value)) {
-    base = ' ' + formatError(value);
-  }
-
-  if (keys.length === 0 && (!array || value.length == 0)) {
-    return braces[0] + base + braces[1];
-  }
-
-  if (recurseTimes < 0) {
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    } else {
-      return ctx.stylize('[Object]', 'special');
-    }
-  }
-
-  ctx.seen.push(value);
-
-  var output;
-  if (array) {
-    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
-  } else {
-    output = keys.map(function(key) {
-      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
-    });
-  }
-
-  ctx.seen.pop();
-
-  return reduceToSingleString(output, base, braces);
-}
-
-
-function formatPrimitive(ctx, value) {
-  if (isUndefined(value))
-    return ctx.stylize('undefined', 'undefined');
-  if (isString(value)) {
-    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
-                                             .replace(/'/g, "\\'")
-                                             .replace(/\\"/g, '"') + '\'';
-    return ctx.stylize(simple, 'string');
-  }
-  if (isNumber(value))
-    return ctx.stylize('' + value, 'number');
-  if (isBoolean(value))
-    return ctx.stylize('' + value, 'boolean');
-  // For some reason typeof null is "object", so special case here.
-  if (isNull(value))
-    return ctx.stylize('null', 'null');
-}
-
-
-function formatError(value) {
-  return '[' + Error.prototype.toString.call(value) + ']';
-}
-
-
-function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
-  var output = [];
-  for (var i = 0, l = value.length; i < l; ++i) {
-    if (hasOwnProperty(value, String(i))) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
-          String(i), true));
-    } else {
-      output.push('');
-    }
-  }
-  keys.forEach(function(key) {
-    if (!key.match(/^\d+$/)) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
-          key, true));
-    }
-  });
-  return output;
-}
-
-
-function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
-  var name, str, desc;
-  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
-  if (desc.get) {
-    if (desc.set) {
-      str = ctx.stylize('[Getter/Setter]', 'special');
-    } else {
-      str = ctx.stylize('[Getter]', 'special');
-    }
-  } else {
-    if (desc.set) {
-      str = ctx.stylize('[Setter]', 'special');
-    }
-  }
-  if (!hasOwnProperty(visibleKeys, key)) {
-    name = '[' + key + ']';
-  }
-  if (!str) {
-    if (ctx.seen.indexOf(desc.value) < 0) {
-      if (isNull(recurseTimes)) {
-        str = formatValue(ctx, desc.value, null);
-      } else {
-        str = formatValue(ctx, desc.value, recurseTimes - 1);
-      }
-      if (str.indexOf('\n') > -1) {
-        if (array) {
-          str = str.split('\n').map(function(line) {
-            return '  ' + line;
-          }).join('\n').substr(2);
-        } else {
-          str = '\n' + str.split('\n').map(function(line) {
-            return '   ' + line;
-          }).join('\n');
-        }
-      }
-    } else {
-      str = ctx.stylize('[Circular]', 'special');
-    }
-  }
-  if (isUndefined(name)) {
-    if (array && key.match(/^\d+$/)) {
-      return str;
-    }
-    name = JSON.stringify('' + key);
-    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
-      name = name.substr(1, name.length - 2);
-      name = ctx.stylize(name, 'name');
-    } else {
-      name = name.replace(/'/g, "\\'")
-                 .replace(/\\"/g, '"')
-                 .replace(/(^"|"$)/g, "'");
-      name = ctx.stylize(name, 'string');
-    }
-  }
-
-  return name + ': ' + str;
-}
-
-
-function reduceToSingleString(output, base, braces) {
-  var numLinesEst = 0;
-  var length = output.reduce(function(prev, cur) {
-    numLinesEst++;
-    if (cur.indexOf('\n') >= 0) numLinesEst++;
-    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
-  }, 0);
-
-  if (length > 60) {
-    return braces[0] +
-           (base === '' ? '' : base + '\n ') +
-           ' ' +
-           output.join(',\n  ') +
-           ' ' +
-           braces[1];
-  }
-
-  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
-}
-
-
-// NOTE: These type checking functions intentionally don't use `instanceof`
-// because it is fragile and can be easily faked with `Object.create()`.
-function isArray(ar) {
-  return Array.isArray(ar);
-}
-exports.isArray = isArray;
-
-function isBoolean(arg) {
-  return typeof arg === 'boolean';
-}
-exports.isBoolean = isBoolean;
-
-function isNull(arg) {
-  return arg === null;
-}
-exports.isNull = isNull;
-
-function isNullOrUndefined(arg) {
-  return arg == null;
-}
-exports.isNullOrUndefined = isNullOrUndefined;
-
-function isNumber(arg) {
-  return typeof arg === 'number';
-}
-exports.isNumber = isNumber;
-
-function isString(arg) {
-  return typeof arg === 'string';
-}
-exports.isString = isString;
-
-function isSymbol(arg) {
-  return typeof arg === 'symbol';
-}
-exports.isSymbol = isSymbol;
-
-function isUndefined(arg) {
-  return arg === void 0;
-}
-exports.isUndefined = isUndefined;
-
-function isRegExp(re) {
-  return isObject(re) && objectToString(re) === '[object RegExp]';
-}
-exports.isRegExp = isRegExp;
-
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
-}
-exports.isObject = isObject;
-
-function isDate(d) {
-  return isObject(d) && objectToString(d) === '[object Date]';
-}
-exports.isDate = isDate;
-
-function isError(e) {
-  return isObject(e) &&
-      (objectToString(e) === '[object Error]' || e instanceof Error);
-}
-exports.isError = isError;
-
-function isFunction(arg) {
-  return typeof arg === 'function';
-}
-exports.isFunction = isFunction;
-
-function isPrimitive(arg) {
-  return arg === null ||
-         typeof arg === 'boolean' ||
-         typeof arg === 'number' ||
-         typeof arg === 'string' ||
-         typeof arg === 'symbol' ||  // ES6 symbol
-         typeof arg === 'undefined';
-}
-exports.isPrimitive = isPrimitive;
-
-exports.isBuffer = __webpack_require__(/*! ./support/isBuffer */ "../node_modules/util/support/isBufferBrowser.js");
-
-function objectToString(o) {
-  return Object.prototype.toString.call(o);
-}
-
-
-function pad(n) {
-  return n < 10 ? '0' + n.toString(10) : n.toString(10);
-}
-
-
-var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-              'Oct', 'Nov', 'Dec'];
-
-// 26 Feb 16:19:34
-function timestamp() {
-  var d = new Date();
-  var time = [pad(d.getHours()),
-              pad(d.getMinutes()),
-              pad(d.getSeconds())].join(':');
-  return [d.getDate(), months[d.getMonth()], time].join(' ');
-}
-
-
-// log is just a thin wrapper to console.log that prepends a timestamp
-exports.log = function() {
-  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
-};
-
-
-/**
- * Inherit the prototype methods from one constructor into another.
- *
- * The Function.prototype.inherits from lang.js rewritten as a standalone
- * function (not on Function.prototype). NOTE: If this file is to be loaded
- * during bootstrapping this function needs to be rewritten using some native
- * functions as prototype setup using normal JavaScript does not work as
- * expected during bootstrapping (see mirror.js in r114903).
- *
- * @param {function} ctor Constructor function which needs to inherit the
- *     prototype.
- * @param {function} superCtor Constructor function to inherit prototype from.
- */
-exports.inherits = __webpack_require__(/*! inherits */ "../node_modules/inherits/inherits_browser.js");
-
-exports._extend = function(origin, add) {
-  // Don't do anything if add isn't an object
-  if (!add || !isObject(add)) return origin;
-
-  var keys = Object.keys(add);
-  var i = keys.length;
-  while (i--) {
-    origin[keys[i]] = add[keys[i]];
-  }
-  return origin;
-};
-
-function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ "../node_modules/webpack/buildin/global.js"), __webpack_require__(/*! ./../process/browser.js */ "../node_modules/process/browser.js")))
-
-/***/ }),
-
 /***/ "../node_modules/vm-browserify/index.js":
 /*!**********************************************!*\
   !*** ../node_modules/vm-browserify/index.js ***!
@@ -37225,17 +36135,6 @@ var ioBroker_ButtonHandler = /** @class */ (function (_super) {
 
 /***/ }),
 
-/***/ "./admin/parameterEditor/parameterEditor.Map.inc.html":
-/*!************************************************************!*\
-  !*** ./admin/parameterEditor/parameterEditor.Map.inc.html ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<div class=\"editor-table\">\n    <div class=\"row padding5\">\n            <div class=\"cell padding5\">\n                    ioBroker\n                </div>\n                <div class=\"cell padding5\">\n                        \n                    </div>                \n        <div class=\"cell padding5\">\n            HomeKit\n        </div>\n        <div class=\"cell padding5\">\n            Actions\n        </div>\n\n    </div>\n    <template id=\"mappingRow\">\n        <div class=\"row\">\n            <div class=\"cell padding5\">\n                <div class=\"input-container flex-container-row full-width\">\n                    <input id=\"ioBrokerValue\" type=\"text\"></input>\n                    <div>\n                        <input type=\"checkbox\" id=\"isSimpleValue\" /><span> is simple value</span>\n                    </div>\n                </div>\n            </div>\n            <div class=\"cell padding5\">\n                &hArr;\n            </div>\n            <div class=\"cell padding5\">\n                <div class=\"input-container full-width\">\n                    <input id=\"homekitValue\" type=\"text\"></input>\n                </div>\n            </div>\n            <div class=\"cell padding5\">\n                <a id=\"moveUp\" href=\"#\"><span class=\"icon mif-move-up fg-black\"></span></a>\n                <a id=\"moveDown\" href=\"#\"><span class=\"icon mif-move-down fg-black\"></span></a>\n                <a id=\"delRow\" href=\"#\"><span class=\"icon mif-minus fg-red\"></span></a>\n            </div>\n        </div>\n    </template>\n    <div class=\"row\" id=\"lastRow\">\n        <div class=\"cell padding5\">\n            <a id=\"addRow\" href=\"#\"><span class=\"icon mif-plus fg-green\"></span><span class=\"translate\">add new mapping</span></a>\n        </div>\n\n    </div>\n</div>"
-
-/***/ }),
-
 /***/ "./admin/parameterEditor/parameterEditor.base.ts":
 /*!*******************************************************!*\
   !*** ./admin/parameterEditor/parameterEditor.base.ts ***!
@@ -37413,6 +36312,7 @@ var parameterEditor_const_1 = __webpack_require__(/*! ./parameterEditor.const */
 var parameterEditor_singleState_1 = __webpack_require__(/*! ./parameterEditor.singleState */ "./admin/parameterEditor/parameterEditor.singleState.ts");
 var parameterEditor_multiState_1 = __webpack_require__(/*! ./parameterEditor.multiState */ "./admin/parameterEditor/parameterEditor.multiState.ts");
 var parameterEditor_homematic_WindowCovering_TargetPosition_1 = __webpack_require__(/*! ./parameterEditor.homematic.WindowCovering.TargetPosition */ "./admin/parameterEditor/parameterEditor.homematic.WindowCovering.TargetPosition.ts");
+var parameterEditor_knx_WindowCovering_TargetPosition_1 = __webpack_require__(/*! ./parameterEditor.knx.WindowCovering.TargetPosition */ "./admin/parameterEditor/parameterEditor.knx.WindowCovering.TargetPosition.ts");
 var parameterEditor_scaleConversion_1 = __webpack_require__(/*! ./parameterEditor.scaleConversion */ "./admin/parameterEditor/parameterEditor.scaleConversion.ts");
 var parameterEditor_conversionScript_1 = __webpack_require__(/*! ./parameterEditor.conversionScript */ "./admin/parameterEditor/parameterEditor.conversionScript.ts");
 var parameterEditor_map_1 = __webpack_require__(/*! ./parameterEditor.map */ "./admin/parameterEditor/parameterEditor.map.ts");
@@ -37426,7 +36326,8 @@ exports.inoutFunctions = new Map([
     ["ioBroker.State.OnlyACK", function (callback) { return new parameterEditor_singleState_1.ParameterEditor_SingleState(callback); }],
     ["ioBroker.homematic.WindowCovering.TargetPosition", function (callback) { return new parameterEditor_homematic_WindowCovering_TargetPosition_1.ParameterEditor_HomeMaticWindowCoveringTargetPosition(callback); }],
     ["ioBroker.homematic.Dimmer.On", function (callback) { return new parameterEditor_homematic_dimmer_1.ParameterEditor_HomeMatic_Dimmer(callback, true); }],
-    ["ioBroker.homematic.Dimmer.Brightness", function (callback) { return new parameterEditor_homematic_dimmer_1.ParameterEditor_HomeMatic_Dimmer(callback, false); }]
+    ["ioBroker.homematic.Dimmer.Brightness", function (callback) { return new parameterEditor_homematic_dimmer_1.ParameterEditor_HomeMatic_Dimmer(callback, false); }],
+    ["ioBroker.knx.WindowCovering.TargetPosition", function (callback) { return new parameterEditor_knx_WindowCovering_TargetPosition_1.ParameterEditor_knxWindowCoveringTargetPosition(callback); }]
 ]);
 exports.convFunctions = new Map([
     ["", function (callback) { return new parameterEditor_null_1.ParameterEditor_Null(callback); }],
@@ -37605,6 +36506,101 @@ exports.ParameterEditor_HomeMatic_Dimmer = ParameterEditor_HomeMatic_Dimmer;
 
 /***/ }),
 
+/***/ "./admin/parameterEditor/parameterEditor.knx.WindowCovering.TargetPosition.inc.html":
+/*!******************************************************************************************!*\
+  !*** ./admin/parameterEditor/parameterEditor.knx.WindowCovering.TargetPosition.inc.html ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"editor-table\">\n    <div class=\"row\">\n        <div class=\"cell\">\n            <span class=\"translate\">Current Position :</span>\n        </div>\n        <div class=\"cell\">\n            <div class=\"input-container full-width\">\n                <textarea id=\"current\" rows=1 class=\"stateSelectTarget\"></textarea>\n                <button class=\"input-control button id-selector\"><span class=\"mif-more-horiz\"></span></button>\n            </div>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div class=\"cell\">\n            <span class=\"translate\">Target Position:</span>\n        </div>\n        <div class=\"cell\">\n            <div class=\"input-container full-width\">\n                <textarea id=\"target\" rows=1 class=\"stateSelectTarget\"></textarea>\n                <button class=\"input-control button id-selector\"><span class=\"mif-more-horiz\"></span></button>\n            </div>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div class=\"cell\">\n            <span class=\"translate\">Stop:</span>\n        </div>\n        <div class=\"cell\">\n            <div class=\"input-container full-width\">\n                <textarea id=\"STOP\" rows=1 class=\"stateSelectTarget\"></textarea>\n                <button class=\"input-control button id-selector\"><span class=\"mif-more-horiz\"></span></button>\n            </div>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div class=\"cell\">\n            <span class=\"translate\">Up/Down:</span>\n        </div>\n        <div class=\"cell\">\n            <div class=\"input-container full-width\">\n                <textarea id=\"UpDown\" rows=1 class=\"stateSelectTarget\"></textarea>\n                <button class=\"input-control button id-selector\"><span class=\"mif-more-horiz\"></span></button>\n            </div>\n        </div>\n    </div>\n</div>"
+
+/***/ }),
+
+/***/ "./admin/parameterEditor/parameterEditor.knx.WindowCovering.TargetPosition.ts":
+/*!************************************************************************************!*\
+  !*** ./admin/parameterEditor/parameterEditor.knx.WindowCovering.TargetPosition.ts ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var parameterEditor_base_1 = __webpack_require__(/*! ./parameterEditor.base */ "./admin/parameterEditor/parameterEditor.base.ts");
+var admin_pageLoader_1 = __webpack_require__(/*! ../admin.pageLoader */ "./admin/admin.pageLoader.ts");
+var admin_utils_1 = __webpack_require__(/*! ../admin.utils */ "./admin/admin.utils.ts");
+var ParameterEditor_KNXWindowCoveringTargetPosition = /** @class */ (function (_super) {
+    __extends(ParameterEditor_KNXWindowCoveringTargetPosition, _super);
+    function ParameterEditor_KNXWindowCoveringTargetPosition(valueChangeCallback) {
+        var _this = _super.call(this, valueChangeCallback) || this;
+        _this.templateNode = admin_pageLoader_1.createAndCloneTemplateElement(__webpack_require__(/*! ./parameterEditor.knx.WindowCovering.TargetPosition.inc.html */ "./admin/parameterEditor/parameterEditor.knx.WindowCovering.TargetPosition.inc.html"));
+        _this.txtCurrent = _this.templateNode.querySelector("#current");
+        _this.txtCurrent.addEventListener('input', function (ev) { return _this.valueChanged(); });
+        _this.txtTarget = _this.templateNode.querySelector("#target");
+        _this.txtTarget.addEventListener('input', function (ev) { return _this.valueChanged(); });
+        _this.txtSTOP = _this.templateNode.querySelector("#STOP");
+        _this.txtSTOP.addEventListener('input', function (ev) { return _this.valueChanged(); });
+        _this.txtUpDown = _this.templateNode.querySelector("#UpDown");
+        _this.txtUpDown.addEventListener('input', function (ev) { return _this.valueChanged(); });
+        return _this;
+    }
+    ParameterEditor_KNXWindowCoveringTargetPosition.prototype.refreshAndShow = function (containerElement, parameterValue) {
+        this.removeChildren(containerElement);
+        containerElement.appendChild(this.templateNode);
+        try {
+            var p = void 0;
+            if (typeof parameterValue === 'string')
+                p = [parameterValue];
+            else if (parameterValue instanceof Array)
+                p = parameterValue;
+            else
+                p = [];
+            admin_utils_1.Utils.setInputValue(this.txtCurrent, (p.length >= 1) ? p[0] : "");
+            admin_utils_1.Utils.setInputValue(this.txtTarget, (p.length >= 2) ? p[1] : "");
+            admin_utils_1.Utils.setInputValue(this.txtSTOP, (p.length >= 2) ? p[2] : "");
+            admin_utils_1.Utils.setInputValue(this.txtUpDown, (p.length >= 2) ? p[3] : "");
+        }
+        catch (e) {
+            this.txtCurrent.value = parameterValue;
+            this.txtTarget.value = "";
+            this.txtSTOP.value = "";
+            this.txtUpDown.value = "";
+        }
+    };
+    ParameterEditor_KNXWindowCoveringTargetPosition.prototype.buildNewParameterValue = function () {
+        var resultArray = [admin_utils_1.Utils.getInputValue(this.txtCurrent)];
+        if (this.txtTarget.value)
+            resultArray.push(admin_utils_1.Utils.getInputValue(this.txtTarget));
+        else
+            resultArray.push("");
+        if (this.txtSTOP.value)
+            resultArray.push(admin_utils_1.Utils.getInputValue(this.txtSTOP));
+        else
+            resultArray.push("");
+        if (this.txtUpDown.value)
+            resultArray.push(admin_utils_1.Utils.getInputValue(this.txtUpDown));
+        else
+            resultArray.push("");
+        return resultArray;
+    };
+    return ParameterEditor_KNXWindowCoveringTargetPosition;
+}(parameterEditor_base_1.ParameterEditor));
+exports.ParameterEditor_KNXWindowCoveringTargetPosition = ParameterEditor_KNXWindowCoveringTargetPosition;
+
+
+/***/ }),
+
 /***/ "./admin/parameterEditor/parameterEditor.map.ts":
 /*!******************************************************!*\
   !*** ./admin/parameterEditor/parameterEditor.map.ts ***!
@@ -37629,13 +36625,13 @@ var parameterEditor_base_1 = __webpack_require__(/*! ./parameterEditor.base */ "
 var admin_pageLoader_1 = __webpack_require__(/*! ../admin.pageLoader */ "./admin/admin.pageLoader.ts");
 var admin_utils_1 = __webpack_require__(/*! ../admin.utils */ "./admin/admin.utils.ts");
 var conversion_map_1 = __webpack_require__(/*! ../../yahka.functions/conversion.map */ "./yahka.functions/conversion.map.ts");
-var util_1 = __webpack_require__(/*! util */ "../node_modules/util/util.js");
+var util_1 = __webpack_require__(/*! util */ "../node_modules/node-libs-browser/node_modules/util/util.js");
 var ParameterEditor_Map = /** @class */ (function (_super) {
     __extends(ParameterEditor_Map, _super);
     function ParameterEditor_Map(valueChangeCallback) {
         var _this = _super.call(this, valueChangeCallback) || this;
         _this.stateRows = [];
-        _this.templateNode = admin_pageLoader_1.createAndCloneTemplateElement(__webpack_require__(/*! ./parameterEditor.Map.inc.html */ "./admin/parameterEditor/parameterEditor.Map.inc.html"));
+        _this.templateNode = admin_pageLoader_1.createAndCloneTemplateElement(__webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module './parameterEditor.Map.inc.html'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())));
         _this.stateTemplate = _this.templateNode.querySelector('#mappingRow');
         _this.lastRow = _this.templateNode.querySelector('#lastRow');
         var addRow = _this.templateNode.querySelector("#addRow");
@@ -38342,8 +37338,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Characteristic_1 = __webpack_require__(/*! hap-nodejs/lib/Characteristic */ "../node_modules/hap-nodejs/lib/Characteristic.js");
 var Service_1 = __webpack_require__(/*! hap-nodejs/lib/Service */ "../node_modules/hap-nodejs/lib/Service.js");
 __webpack_require__(/*! hap-nodejs/lib/gen/HomeKitTypes */ "../node_modules/hap-nodejs/lib/gen/HomeKitTypes.js");
-var HapCommunity = __webpack_require__(/*! ../hap-nodejs-community-types */ "../hap-nodejs-community-types/types.js");
-var util_1 = __webpack_require__(/*! util */ "../node_modules/util/util.js");
+var HapCommunity = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module '../hap-nodejs-community-types'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var util_1 = __webpack_require__(/*! util */ "../node_modules/node-libs-browser/node_modules/util/util.js");
 var uuid = __webpack_require__(/*! hap-nodejs/lib/util/uuid */ "../node_modules/hap-nodejs/lib/util/uuid.js");
 var hapTypesImported = false;
 function importHAPCommunityTypesAndFixes() {
@@ -38769,7 +37765,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var iofunc_base_1 = __webpack_require__(/*! ./iofunc.base */ "./yahka.functions/iofunc.base.ts");
-var util_1 = __webpack_require__(/*! util */ "../node_modules/util/util.js");
+var util_1 = __webpack_require__(/*! util */ "../node_modules/node-libs-browser/node_modules/util/util.js");
 var yahka_utils_1 = __webpack_require__(/*! ../shared/yahka.utils */ "./shared/yahka.utils.ts");
 function isHomematic_Dimmer_Parameter(value) {
     if (value === undefined)
@@ -38948,7 +37944,7 @@ var __values = (this && this.__values) || function (o) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var iofunc_base_1 = __webpack_require__(/*! ./iofunc.base */ "./yahka.functions/iofunc.base.ts");
-var util_1 = __webpack_require__(/*! util */ "../node_modules/util/util.js");
+var util_1 = __webpack_require__(/*! util */ "../node_modules/node-libs-browser/node_modules/util/util.js");
 function isMultiStateParameter(value) {
     if (value === undefined)
         return false;
