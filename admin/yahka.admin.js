@@ -36327,7 +36327,7 @@ exports.inoutFunctions = new Map([
     ["ioBroker.homematic.WindowCovering.TargetPosition", function (callback) { return new parameterEditor_homematic_WindowCovering_TargetPosition_1.ParameterEditor_HomeMaticWindowCoveringTargetPosition(callback); }],
     ["ioBroker.homematic.Dimmer.On", function (callback) { return new parameterEditor_homematic_dimmer_1.ParameterEditor_HomeMatic_Dimmer(callback, true); }],
     ["ioBroker.homematic.Dimmer.Brightness", function (callback) { return new parameterEditor_homematic_dimmer_1.ParameterEditor_HomeMatic_Dimmer(callback, false); }],
-    ["ioBroker.knx.WindowCovering.TargetPosition", function (callback) { return new parameterEditor_knx_WindowCovering_TargetPosition_1.ParameterEditor_knxWindowCoveringTargetPosition(callback); }]
+    ["ioBroker.knx.WindowCovering.TargetPosition", function (callback) { return new parameterEditor_knx_WindowCovering_TargetPosition_1.ParameterEditor_KNXWindowCoveringTargetPosition(callback); }]
 ]);
 exports.convFunctions = new Map([
     ["", function (callback) { return new parameterEditor_null_1.ParameterEditor_Null(callback); }],
