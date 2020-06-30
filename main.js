@@ -2537,9 +2537,7 @@ var TIoBrokerInOutFunction_KNXCovering_TargetPosition = /** @class */ (function 
         _this.upDowName = upDowName;
         _this.upName = upName;
         _this.downName = downName;
-        _this.workingState = false;
-        _this.lastAcknowledgedValue = undefined;
-        _this.debounceTimer = -1;
+        _this.targetSetByHomeKit = false;
         _this.addSubscriptionRequest(currentName);
         _this.addSubscriptionRequest(targetName);
         _this.addSubscriptionRequest(stopName);
@@ -2547,20 +2545,33 @@ var TIoBrokerInOutFunction_KNXCovering_TargetPosition = /** @class */ (function 
         _this.addSubscriptionRequest(upName);
         _this.addSubscriptionRequest(downName);
         adapter.getForeignState(upName, function (error, ioState) {
-            if (ioState && ioState.val == true)
-                _this.workingState = true;
+            if (ioState && ioState.val == true) {
+                _this.valueForHomeKit = 0;
+                adapter.log.debug("IoBrokerInOutFunction_KNXWindowCovering_TargetPosition.constructor, opening window");
+            }
             else if (ioState && ioState.val == false) {
                 adapter.getForeignState(upName, function (error, ioState) {
-                    if (ioState && ioState.val == true)
-                        _this.workingState = true;
-                    else if (ioState && ioState.val == false)
-                        _this.workingState = false;
+                    if (ioState && ioState.val == true) {
+                        _this.valueForHomeKit = 100;
+                        adapter.log.debug("IoBrokerInOutFunction_KNXWindowCovering_TargetPosition.constructor, closing window");
+                    }
+                    else if (ioState && ioState.val == false) {
+                        adapter.getForeignState(currentName, function (error, ioState) {
+                            if (ioState) {
+                                _this.valueForHomeKit = ioState.val;
+                                adapter.log.debug("IoBrokerInOutFunction_KNXWindowCovering_TargetPosition.constructor, current position: " + ioState.val);
+                            }
+                            else {
+                                _this.valueForHomeKit = undefined;
+                            }
+                        });
+                    }
                     else
-                        _this.workingState = undefined;
+                        _this.valueForHomeKit = undefined;
                 });
             }
             else
-                _this.workingState = undefined;
+                _this.valueForHomeKit = undefined;
         });
         return _this;
     }
@@ -2595,6 +2606,29 @@ var TIoBrokerInOutFunction_KNXCovering_TargetPosition = /** @class */ (function 
     };
     TIoBrokerInOutFunction_KNXCovering_TargetPosition.prototype.cacheChanged = function (stateName, callback) {
         this.adapter.log.debug('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.cacheChanged, Parameter ' + stateName + ' Value: ' + JSON.stringify(this.stateCache.get(stateName)));
+        if (stateName == this.upName && this.stateCache.get(stateName).val == true && this.targetSetByHomeKit == false) {
+            this.valueForHomeKit = 0;
+            callback(this.valueForHomeKit);
+        }
+        else if (stateName == this.upName && this.stateCache.get(stateName).val == false) {
+            this.targetSetByHomeKit = false;
+            this.valueForHomeKit = this.stateCache.get(this.currentName).val;
+            callback(this.valueForHomeKit);
+        }
+        else if (stateName == this.downName && this.stateCache.get(stateName).val == true && this.targetSetByHomeKit == false) {
+            this.valueForHomeKit = 100;
+            callback(this.valueForHomeKit);
+        }
+        else if (stateName == this.downName && this.stateCache.get(stateName).val == false) {
+            this.targetSetByHomeKit = false;
+            this.valueForHomeKit = this.stateCache.get(this.currentName).val;
+            callback(this.valueForHomeKit);
+        }
+    };
+    TIoBrokerInOutFunction_KNXCovering_TargetPosition.prototype.updateIOBrokerValue = function (plainIoValue, callback) {
+        this.targetSetByHomeKit = true;
+        this.adapter.setForeignState(this.targetName, plainIoValue);
+        callback();
     };
     return TIoBrokerInOutFunction_KNXCovering_TargetPosition;
 }(iofunc_base_1.TIoBrokerInOutFunctionBase));
