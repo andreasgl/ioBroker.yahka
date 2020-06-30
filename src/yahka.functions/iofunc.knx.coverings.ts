@@ -46,7 +46,6 @@ export class TIoBrokerInOutFunction_KNXCovering_TargetPosition extends TIoBroker
                 this.valueForHomeKit = 0;
                 this.onTheMove = true;
                 adapter.log.debug("IoBrokerInOutFunction_KNXWindowCovering_TargetPosition.constructor, opening window")
-                this.toIOBroker(this.valueForHomeKit, () => {})
             }             
             else if (ioState && ioState.val == false) {
                 adapter.getForeignState(upName, (error, ioState) => {
@@ -54,7 +53,6 @@ export class TIoBrokerInOutFunction_KNXCovering_TargetPosition extends TIoBroker
                         this.valueForHomeKit = 100;
                         this.onTheMove = true;
                         adapter.log.debug("IoBrokerInOutFunction_KNXWindowCovering_TargetPosition.constructor, closing window")
-                        this.toIOBroker(this.valueForHomeKit, () => {})
                     } 
                     else if (ioState && ioState.val == false) {
                         adapter.getForeignState(currentName, (error, ioState) => {
@@ -62,7 +60,6 @@ export class TIoBrokerInOutFunction_KNXCovering_TargetPosition extends TIoBroker
                                 this.valueForHomeKit = ioState.val;
                                 this.onTheMove = false;
                                 adapter.log.debug("IoBrokerInOutFunction_KNXWindowCovering_TargetPosition.constructor, current position: " + ioState.val)
-                                this.toIOBroker(this.valueForHomeKit, () => {})
                             } else {
                                 this.valueForHomeKit = undefined;
                                 this.onTheMove = undefined;
@@ -148,19 +145,16 @@ export class TIoBrokerInOutFunction_KNXCovering_PositionState extends TIoBrokerI
             if (ioState && ioState.val == true) {
                 this.valueForHomeKit = 1; // case opening = 1
                 adapter.log.debug("IoBrokerInOutFunction_KNXWindowCovering_PositionState.constructor, opening window")
-                this.toIOBroker(this.valueForHomeKit, () => {})
             }             
             else if (ioState && ioState.val == false) {
                 adapter.getForeignState(upName, (error, ioState) => {
                     if (ioState && ioState.val == true) {
                         this.valueForHomeKit = 0; // case closing = 0
                         adapter.log.debug("IoBrokerInOutFunction_KNXWindowCovering_PositionState.constructor, closing window")
-                        this.toIOBroker(this.valueForHomeKit, () => {})
                     } 
                     else if (ioState && ioState.val == false) {
                         this.valueForHomeKit = 2; // case stopped = 2
                         adapter.log.debug("IoBrokerInOutFunction_KNXWindowCovering_PositionState.constructor, current position: " + ioState.val)
-                        this.toIOBroker(this.valueForHomeKit, () => {})
                     }                   
                     else {
                         this.valueForHomeKit = undefined;
