@@ -37403,6 +37403,7 @@ var parameterEditor_singleState_1 = __webpack_require__(/*! ./parameterEditor.si
 var parameterEditor_multiState_1 = __webpack_require__(/*! ./parameterEditor.multiState */ "./admin/parameterEditor/parameterEditor.multiState.ts");
 var parameterEditor_homematic_WindowCovering_TargetPosition_1 = __webpack_require__(/*! ./parameterEditor.homematic.WindowCovering.TargetPosition */ "./admin/parameterEditor/parameterEditor.homematic.WindowCovering.TargetPosition.ts");
 var parameterEditor_knx_WindowCovering_TargetPosition_1 = __webpack_require__(/*! ./parameterEditor.knx.WindowCovering.TargetPosition */ "./admin/parameterEditor/parameterEditor.knx.WindowCovering.TargetPosition.ts");
+var parameterEditor_knx_WindowCovering_PositionState_1 = __webpack_require__(/*! ./parameterEditor.knx.WindowCovering.PositionState */ "./admin/parameterEditor/parameterEditor.knx.WindowCovering.PositionState.ts");
 var parameterEditor_scaleConversion_1 = __webpack_require__(/*! ./parameterEditor.scaleConversion */ "./admin/parameterEditor/parameterEditor.scaleConversion.ts");
 var parameterEditor_conversionScript_1 = __webpack_require__(/*! ./parameterEditor.conversionScript */ "./admin/parameterEditor/parameterEditor.conversionScript.ts");
 var parameterEditor_map_1 = __webpack_require__(/*! ./parameterEditor.map */ "./admin/parameterEditor/parameterEditor.map.ts");
@@ -37417,7 +37418,8 @@ exports.inoutFunctions = new Map([
     ["ioBroker.homematic.WindowCovering.TargetPosition", function (callback) { return new parameterEditor_homematic_WindowCovering_TargetPosition_1.ParameterEditor_HomeMaticWindowCoveringTargetPosition(callback); }],
     ["ioBroker.homematic.Dimmer.On", function (callback) { return new parameterEditor_homematic_dimmer_1.ParameterEditor_HomeMatic_Dimmer(callback, true); }],
     ["ioBroker.homematic.Dimmer.Brightness", function (callback) { return new parameterEditor_homematic_dimmer_1.ParameterEditor_HomeMatic_Dimmer(callback, false); }],
-    ["ioBroker.knx.WindowCovering.TargetPosition", function (callback) { return new parameterEditor_knx_WindowCovering_TargetPosition_1.ParameterEditor_KNXWindowCoveringTargetPosition(callback); }]
+    ["ioBroker.knx.WindowCovering.TargetPosition", function (callback) { return new parameterEditor_knx_WindowCovering_TargetPosition_1.ParameterEditor_KNXWindowCoveringTargetPosition(callback); }],
+    ["ioBroker.knx.WindowCovering.PositionState", function (callback) { return new parameterEditor_knx_WindowCovering_PositionState_1.ParameterEditor_KNXWindowCoveringPositionState(callback); }],
 ]);
 exports.convFunctions = new Map([
     ["", function (callback) { return new parameterEditor_null_1.ParameterEditor_Null(callback); }],
@@ -37592,6 +37594,85 @@ var ParameterEditor_HomeMatic_Dimmer = /** @class */ (function (_super) {
     return ParameterEditor_HomeMatic_Dimmer;
 }(parameterEditor_base_1.ParameterEditor));
 exports.ParameterEditor_HomeMatic_Dimmer = ParameterEditor_HomeMatic_Dimmer;
+
+
+/***/ }),
+
+/***/ "./admin/parameterEditor/parameterEditor.knx.WindowCovering.PositionState.inc.html":
+/*!*****************************************************************************************!*\
+  !*** ./admin/parameterEditor/parameterEditor.knx.WindowCovering.PositionState.inc.html ***!
+  \*****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"editor-table\">\n    <div class=\"row\">\n        <div class=\"cell\">\n            <span class=\"translate\">Up:</span>\n        </div>\n        <div class=\"cell\">\n            <div class=\"input-container full-width\">\n                <textarea id=\"Up\" rows=1 class=\"stateSelectTarget\"></textarea>\n                <button class=\"input-control button id-selector\"><span class=\"mif-more-horiz\"></span></button>\n            </div>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div class=\"cell\">\n            <span class=\"translate\">Down:</span>\n        </div>\n        <div class=\"cell\">\n            <div class=\"input-container full-width\">\n                <textarea id=\"Down\" rows=1 class=\"stateSelectTarget\"></textarea>\n                <button class=\"input-control button id-selector\"><span class=\"mif-more-horiz\"></span></button>\n            </div>\n        </div>\n    </div>\n</div>"
+
+/***/ }),
+
+/***/ "./admin/parameterEditor/parameterEditor.knx.WindowCovering.PositionState.ts":
+/*!***********************************************************************************!*\
+  !*** ./admin/parameterEditor/parameterEditor.knx.WindowCovering.PositionState.ts ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var parameterEditor_base_1 = __webpack_require__(/*! ./parameterEditor.base */ "./admin/parameterEditor/parameterEditor.base.ts");
+var admin_pageLoader_1 = __webpack_require__(/*! ../admin.pageLoader */ "./admin/admin.pageLoader.ts");
+var admin_utils_1 = __webpack_require__(/*! ../admin.utils */ "./admin/admin.utils.ts");
+var ParameterEditor_KNXWindowCoveringPositionState = /** @class */ (function (_super) {
+    __extends(ParameterEditor_KNXWindowCoveringPositionState, _super);
+    function ParameterEditor_KNXWindowCoveringPositionState(valueChangeCallback) {
+        var _this = _super.call(this, valueChangeCallback) || this;
+        _this.templateNode = admin_pageLoader_1.createAndCloneTemplateElement(__webpack_require__(/*! ./parameterEditor.knx.WindowCovering.PositionState.inc.html */ "./admin/parameterEditor/parameterEditor.knx.WindowCovering.PositionState.inc.html"));
+        _this.txtUp = _this.templateNode.querySelector("#Up");
+        _this.txtUp.addEventListener('input', function (ev) { return _this.valueChanged(); });
+        _this.txtDown = _this.templateNode.querySelector("#Down");
+        _this.txtDown.addEventListener('input', function (ev) { return _this.valueChanged(); });
+        return _this;
+    }
+    ParameterEditor_KNXWindowCoveringPositionState.prototype.refreshAndShow = function (containerElement, parameterValue) {
+        this.removeChildren(containerElement);
+        containerElement.appendChild(this.templateNode);
+        try {
+            var p = void 0;
+            if (typeof parameterValue === 'string')
+                p = [parameterValue];
+            else if (parameterValue instanceof Array)
+                p = parameterValue;
+            else
+                p = [];
+            admin_utils_1.Utils.setInputValue(this.txtUp, (p.length >= 1) ? p[0] : "");
+            admin_utils_1.Utils.setInputValue(this.txtDown, (p.length >= 2) ? p[1] : "");
+        }
+        catch (e) {
+            this.txtUp.value = "";
+            this.txtDown.value = "";
+        }
+    };
+    ParameterEditor_KNXWindowCoveringPositionState.prototype.buildNewParameterValue = function () {
+        var resultArray = [admin_utils_1.Utils.getInputValue(this.txtUp)];
+        if (this.txtDown.value)
+            resultArray.push(admin_utils_1.Utils.getInputValue(this.txtDown));
+        else
+            resultArray.push("");
+        return resultArray;
+    };
+    return ParameterEditor_KNXWindowCoveringPositionState;
+}(parameterEditor_base_1.ParameterEditor));
+exports.ParameterEditor_KNXWindowCoveringPositionState = ParameterEditor_KNXWindowCoveringPositionState;
 
 
 /***/ }),
