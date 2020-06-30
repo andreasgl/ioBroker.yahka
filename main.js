@@ -2010,7 +2010,7 @@ var functions_factory_1 = __webpack_require__(/*! ./functions.factory */ "./yahk
 var iofunc_state_1 = __webpack_require__(/*! ./iofunc.state */ "./yahka.functions/iofunc.state.ts");
 var iofunc_const_1 = __webpack_require__(/*! ./iofunc.const */ "./yahka.functions/iofunc.const.ts");
 var iofunc_homematic_covering_1 = __webpack_require__(/*! ./iofunc.homematic.covering */ "./yahka.functions/iofunc.homematic.covering.ts");
-var iofunc_knx_covering_1 = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module './iofunc.knx.covering'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var iofunc_knx_coverings_1 = __webpack_require__(/*! ./iofunc.knx.coverings */ "./yahka.functions/iofunc.knx.coverings.ts");
 var conversion_passthrough_1 = __webpack_require__(/*! ./conversion.passthrough */ "./yahka.functions/conversion.passthrough.ts");
 var conversion_homekit_homematic_1 = __webpack_require__(/*! ./conversion.homekit.homematic */ "./yahka.functions/conversion.homekit.homematic.ts");
 var conversion_scale_1 = __webpack_require__(/*! ./conversion.scale */ "./yahka.functions/conversion.scale.ts");
@@ -2025,7 +2025,7 @@ functions_factory_1.inOutFactory["ioBroker.State.Defered"] = iofunc_state_1.TIoB
 functions_factory_1.inOutFactory["ioBroker.State.OnlyACK"] = iofunc_state_1.TIoBrokerInOutFunction_State_OnlyACK.create;
 functions_factory_1.inOutFactory["const"] = iofunc_const_1.TIoBrokerInOutFunction_Const.create;
 functions_factory_1.inOutFactory["ioBroker.homematic.WindowCovering.TargetPosition"] = iofunc_homematic_covering_1.TIoBrokerInOutFunction_HomematicWindowCovering_TargetPosition.create;
-functions_factory_1.inOutFactory["ioBroker.knx.WindowCovering.TargetPosition"] = iofunc_knx_covering_1.TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.create;
+functions_factory_1.inOutFactory["ioBroker.knx.WindowCovering.TargetPosition"] = iofunc_knx_coverings_1.TIoBrokerInOutFunction_KNXCovering_TargetPosition.create;
 functions_factory_1.inOutFactory["ioBroker.homematic.Dimmer.On"] = iofunc_homematic_dimmer_1.TIoBrokerInOutFunction_Homematic_Dimmer_On.create;
 functions_factory_1.inOutFactory["ioBroker.homematic.Dimmer.Brightness"] = iofunc_homematic_dimmer_1.TIoBrokerInOutFunction_Homematic_Dimmer_Brightness.create;
 functions_factory_1.conversionFactory["passthrough"] = function (adapter, param) { return new conversion_passthrough_1.TIoBrokerConversion_Passthrough(adapter); };
@@ -2501,6 +2501,108 @@ var TIoBrokerInOutFunction_Homematic_Dimmer_Brightness = /** @class */ (function
     return TIoBrokerInOutFunction_Homematic_Dimmer_Brightness;
 }(TIoBrokerInOutFunction_Homematic_Dimmer_Base));
 exports.TIoBrokerInOutFunction_Homematic_Dimmer_Brightness = TIoBrokerInOutFunction_Homematic_Dimmer_Brightness;
+
+
+/***/ }),
+
+/***/ "./yahka.functions/iofunc.knx.coverings.ts":
+/*!*************************************************!*\
+  !*** ./yahka.functions/iofunc.knx.coverings.ts ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var iofunc_base_1 = __webpack_require__(/*! ./iofunc.base */ "./yahka.functions/iofunc.base.ts");
+var TIoBrokerInOutFunction_KNXCovering_TargetPosition = /** @class */ (function (_super) {
+    __extends(TIoBrokerInOutFunction_KNXCovering_TargetPosition, _super);
+    function TIoBrokerInOutFunction_KNXCovering_TargetPosition(adapter, stateName, workingItem) {
+        var _this = _super.call(this, adapter, stateName, 0) || this;
+        _this.adapter = adapter;
+        _this.stateName = stateName;
+        _this.workingItem = workingItem;
+        _this.lastWorkingState = false;
+        _this.lastAcknowledgedValue = undefined;
+        _this.debounceTimer = -1;
+        _this.addSubscriptionRequest(workingItem);
+        adapter.getForeignState(workingItem, function (error, ioState) {
+            if (ioState)
+                _this.lastWorkingState = ioState.val;
+            else
+                _this.lastWorkingState = undefined;
+        });
+        return _this;
+    }
+    TIoBrokerInOutFunction_KNXCovering_TargetPosition.create = function (adapter, parameters) {
+        var p;
+        if (typeof parameters === 'string')
+            p = [parameters];
+        else if (parameters instanceof Array)
+            p = parameters;
+        else
+            p = [];
+        if (p.length == 0)
+            return undefined;
+        adapter.log.debug('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.Create, Parameter ' + JSON.stringify(p));
+        var stateName = p[0];
+        var workingItemName;
+        if (p.length >= 2)
+            workingItemName = p[1];
+        else {
+            var pathNames = stateName.split('.');
+            pathNames[pathNames.length - 1] = 'WORKING';
+            workingItemName = pathNames.join('.');
+        }
+        return new TIoBrokerInOutFunction_KNXCovering_TargetPosition(adapter, stateName, workingItemName);
+    };
+    TIoBrokerInOutFunction_KNXCovering_TargetPosition.prototype.subscriptionEvent = function (stateName, ioState, callback) {
+        if (!ioState)
+            return;
+        if (stateName == this.workingItem) {
+            this.adapter.log.debug('[' + this.stateName + '] got a working item change event: ' + JSON.stringify(ioState));
+            this.lastWorkingState = ioState.val;
+            this.setupDeferredChangeEvent(callback);
+        }
+        else if (stateName == this.stateName) {
+            this.adapter.log.debug('[' + this.stateName + '] got a target state change event:' + JSON.stringify(ioState));
+            if (ioState.ack) {
+                this.lastAcknowledgedValue = ioState.val;
+                this.setupDeferredChangeEvent(callback);
+            }
+        }
+    };
+    TIoBrokerInOutFunction_KNXCovering_TargetPosition.prototype.setupDeferredChangeEvent = function (callback) {
+        this.cancelDeferredChangeEvent();
+        this.debounceTimer = setTimeout(this.deferredChangeEvent.bind(this, callback), 150);
+    };
+    TIoBrokerInOutFunction_KNXCovering_TargetPosition.prototype.cancelDeferredChangeEvent = function () {
+        clearTimeout(this.debounceTimer);
+        this.debounceTimer = -1;
+    };
+    TIoBrokerInOutFunction_KNXCovering_TargetPosition.prototype.deferredChangeEvent = function (callback) {
+        if (!this.lastWorkingState) { // only fire callback if the covering does not move
+            this.adapter.log.debug('[' + this.stateName + '] firing target state change event:' + JSON.stringify(this.lastAcknowledgedValue));
+            callback(this.lastAcknowledgedValue);
+        }
+        else {
+            this.adapter.log.debug('[' + this.stateName + '] canceling target state change event - covering is working');
+        }
+    };
+    return TIoBrokerInOutFunction_KNXCovering_TargetPosition;
+}(iofunc_base_1.TIoBrokerInOutFunction_StateBase));
+exports.TIoBrokerInOutFunction_KNXCovering_TargetPosition = TIoBrokerInOutFunction_KNXCovering_TargetPosition;
 
 
 /***/ }),
