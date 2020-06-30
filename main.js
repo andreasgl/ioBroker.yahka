@@ -2528,20 +2528,39 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var iofunc_base_1 = __webpack_require__(/*! ./iofunc.base */ "./yahka.functions/iofunc.base.ts");
 var TIoBrokerInOutFunction_KNXCovering_TargetPosition = /** @class */ (function (_super) {
     __extends(TIoBrokerInOutFunction_KNXCovering_TargetPosition, _super);
-    function TIoBrokerInOutFunction_KNXCovering_TargetPosition(adapter, stateName, workingItem) {
-        var _this = _super.call(this, adapter, stateName, 0) || this;
+    function TIoBrokerInOutFunction_KNXCovering_TargetPosition(adapter, currentName, targetName, stopName, upDowName, upName, downName) {
+        var _this = _super.call(this, adapter) || this;
         _this.adapter = adapter;
-        _this.stateName = stateName;
-        _this.workingItem = workingItem;
-        _this.lastWorkingState = false;
+        _this.currentName = currentName;
+        _this.targetName = targetName;
+        _this.stopName = stopName;
+        _this.upDowName = upDowName;
+        _this.upName = upName;
+        _this.downName = downName;
+        _this.workingState = false;
         _this.lastAcknowledgedValue = undefined;
         _this.debounceTimer = -1;
-        _this.addSubscriptionRequest(workingItem);
-        adapter.getForeignState(workingItem, function (error, ioState) {
-            if (ioState)
-                _this.lastWorkingState = ioState.val;
+        _this.addSubscriptionRequest(currentName);
+        _this.addSubscriptionRequest(targetName);
+        _this.addSubscriptionRequest(stopName);
+        _this.addSubscriptionRequest(upDowName);
+        _this.addSubscriptionRequest(upName);
+        _this.addSubscriptionRequest(downName);
+        adapter.getForeignState(upName, function (error, ioState) {
+            if (ioState && ioState.val == true)
+                _this.workingState = true;
+            else if (ioState && ioState.val == false) {
+                adapter.getForeignState(upName, function (error, ioState) {
+                    if (ioState && ioState.val == true)
+                        _this.workingState = true;
+                    else if (ioState && ioState.val == false)
+                        _this.workingState = false;
+                    else
+                        _this.workingState = undefined;
+                });
+            }
             else
-                _this.lastWorkingState = undefined;
+                _this.workingState = undefined;
         });
         return _this;
     }
@@ -2556,52 +2575,29 @@ var TIoBrokerInOutFunction_KNXCovering_TargetPosition = /** @class */ (function 
         if (p.length == 0)
             return undefined;
         adapter.log.debug('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.Create, Parameter ' + JSON.stringify(p));
-        var stateName = p[0];
-        var workingItemName;
+        var currentName = p[0];
+        var targetName;
+        var stopName;
+        var upDowName;
+        var upName;
+        var downName;
         if (p.length >= 2)
-            workingItemName = p[1];
-        else {
-            var pathNames = stateName.split('.');
-            pathNames[pathNames.length - 1] = 'WORKING';
-            workingItemName = pathNames.join('.');
-        }
-        return new TIoBrokerInOutFunction_KNXCovering_TargetPosition(adapter, stateName, workingItemName);
+            targetName = p[1];
+        if (p.length >= 3)
+            stopName = p[2];
+        if (p.length >= 4)
+            upDowName = p[3];
+        if (p.length >= 5)
+            upName = p[4];
+        if (p.length >= 6)
+            downName = p[5];
+        return new TIoBrokerInOutFunction_KNXCovering_TargetPosition(adapter, currentName, targetName, stopName, upDowName, upName, downName);
     };
-    TIoBrokerInOutFunction_KNXCovering_TargetPosition.prototype.subscriptionEvent = function (stateName, ioState, callback) {
-        if (!ioState)
-            return;
-        if (stateName == this.workingItem) {
-            this.adapter.log.debug('[' + this.stateName + '] got a working item change event: ' + JSON.stringify(ioState));
-            this.lastWorkingState = ioState.val;
-            this.setupDeferredChangeEvent(callback);
-        }
-        else if (stateName == this.stateName) {
-            this.adapter.log.debug('[' + this.stateName + '] got a target state change event:' + JSON.stringify(ioState));
-            if (ioState.ack) {
-                this.lastAcknowledgedValue = ioState.val;
-                this.setupDeferredChangeEvent(callback);
-            }
-        }
-    };
-    TIoBrokerInOutFunction_KNXCovering_TargetPosition.prototype.setupDeferredChangeEvent = function (callback) {
-        this.cancelDeferredChangeEvent();
-        this.debounceTimer = setTimeout(this.deferredChangeEvent.bind(this, callback), 150);
-    };
-    TIoBrokerInOutFunction_KNXCovering_TargetPosition.prototype.cancelDeferredChangeEvent = function () {
-        clearTimeout(this.debounceTimer);
-        this.debounceTimer = -1;
-    };
-    TIoBrokerInOutFunction_KNXCovering_TargetPosition.prototype.deferredChangeEvent = function (callback) {
-        if (!this.lastWorkingState) { // only fire callback if the covering does not move
-            this.adapter.log.debug('[' + this.stateName + '] firing target state change event:' + JSON.stringify(this.lastAcknowledgedValue));
-            callback(this.lastAcknowledgedValue);
-        }
-        else {
-            this.adapter.log.debug('[' + this.stateName + '] canceling target state change event - covering is working');
-        }
+    TIoBrokerInOutFunction_KNXCovering_TargetPosition.prototype.cacheChanged = function (stateName, callback) {
+        this.adapter.log.debug('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.cacheChanged, Parameter ' + stateName + ' Value: ' + JSON.stringify(this.stateCache[stateName]));
     };
     return TIoBrokerInOutFunction_KNXCovering_TargetPosition;
-}(iofunc_base_1.TIoBrokerInOutFunction_StateBase));
+}(iofunc_base_1.TIoBrokerInOutFunctionBase));
 exports.TIoBrokerInOutFunction_KNXCovering_TargetPosition = TIoBrokerInOutFunction_KNXCovering_TargetPosition;
 
 
