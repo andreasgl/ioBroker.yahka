@@ -68,7 +68,7 @@ export class TIoBrokerInOutFunction_KNXCovering_TargetPosition extends TIoBroker
     }
 
     cacheChanged(stateName: string, callback: IInOutChangeNotify) {
-        this.adapter.log.debug('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.cacheChanged, Parameter ' + stateName + ' Value: ' + JSON.stringify(this.stateCache[stateName]));
+        this.adapter.log.debug('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.cacheChanged, Parameter ' + stateName + ' Value: ' + JSON.stringify(this.stateCache.get(stateName)));
     } 
 }
 

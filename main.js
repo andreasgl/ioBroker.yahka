@@ -2594,7 +2594,7 @@ var TIoBrokerInOutFunction_KNXCovering_TargetPosition = /** @class */ (function 
         return new TIoBrokerInOutFunction_KNXCovering_TargetPosition(adapter, currentName, targetName, stopName, upDowName, upName, downName);
     };
     TIoBrokerInOutFunction_KNXCovering_TargetPosition.prototype.cacheChanged = function (stateName, callback) {
-        this.adapter.log.debug('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.cacheChanged, Parameter ' + stateName + ' Value: ' + JSON.stringify(this.stateCache[stateName]));
+        this.adapter.log.debug('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.cacheChanged, Parameter ' + stateName + ' Value: ' + JSON.stringify(this.stateCache.get(stateName)));
     };
     return TIoBrokerInOutFunction_KNXCovering_TargetPosition;
 }(iofunc_base_1.TIoBrokerInOutFunctionBase));
