@@ -18,6 +18,8 @@ export class TIoBrokerInOutFunction_KNXCovering_TargetPosition extends TIoBroker
         if (p.length == 0)
             return undefined;
 
+        adapter.log.debug('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.Create, Parameter ' + JSON.stringify(p));
+
         let stateName: string = p[0];
         let workingItemName: string;
         if (p.length >= 2)
