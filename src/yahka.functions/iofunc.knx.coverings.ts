@@ -1,7 +1,7 @@
-import { IInOutFunction, TIoBrokerInOutFunction_StateBase, IInOutChangeNotify } from "./iofunc.base";
+import { IInOutFunction, TIoBrokerInOutFunctionBase, IInOutChangeNotify } from "./iofunc.base";
 
-export class TIoBrokerInOutFunction_KNXCovering_TargetPosition extends TIoBrokerInOutFunction_StateBase {
-    protected lastWorkingState: boolean = false;
+export class TIoBrokerInOutFunction_KNXCovering_TargetPosition extends TIoBrokerInOutFunctionBase {
+    protected workingState: Boolean = false;
     protected lastAcknowledgedValue: any = undefined;
     protected debounceTimer = -1;
 
@@ -20,65 +20,55 @@ export class TIoBrokerInOutFunction_KNXCovering_TargetPosition extends TIoBroker
 
         adapter.log.debug('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.Create, Parameter ' + JSON.stringify(p));
 
-        let stateName: string = p[0];
-        let workingItemName: string;
+        let currentName: string = p[0];
+        let targetName: string;
+        let stopName: string;
+        let upDowName: string;
+        let upName: string;
+        let downName: string;
         if (p.length >= 2)
-            workingItemName = p[1];
-        else {
-            let pathNames = stateName.split('.');
-            pathNames[pathNames.length - 1] = 'WORKING';
-            workingItemName = pathNames.join('.');
-        }
+            targetName = p[1];
+        if (p.length >= 3)
+            stopName = p[2];
+        if (p.length >= 4)
+            upDowName = p[3];
+        if (p.length >= 5)
+            upName = p[4];
+        if (p.length >= 6)
+            downName = p[5];
 
-        return new TIoBrokerInOutFunction_KNXCovering_TargetPosition(adapter, stateName, workingItemName);
+        return new TIoBrokerInOutFunction_KNXCovering_TargetPosition(adapter, currentName, targetName, stopName, upDowName, upName, downName);
     }
 
 
-    constructor(protected adapter: ioBroker.Adapter, protected stateName: string, protected workingItem: string) {
-        super(adapter, stateName, 0);
-        this.addSubscriptionRequest(workingItem);
-        adapter.getForeignState(workingItem, (error, ioState) => {
-            if (ioState)
-                this.lastWorkingState = ioState.val;
+    constructor(protected adapter: ioBroker.Adapter, protected currentName: string, protected targetName: string, protected stopName: string, protected upDowName: string, protected upName: string, protected downName: string) {
+        super(adapter);
+        this.addSubscriptionRequest(currentName);
+        this.addSubscriptionRequest(targetName);
+        this.addSubscriptionRequest(stopName);
+        this.addSubscriptionRequest(upDowName);
+        this.addSubscriptionRequest(upName);
+        this.addSubscriptionRequest(downName);
+        adapter.getForeignState(upName, (error, ioState) => {
+            if (ioState && ioState.val == true)
+                this.workingState = true;
+            else if (ioState && ioState.val == false) {
+                adapter.getForeignState(upName, (error, ioState) => {
+                    if (ioState && ioState.val == true)
+                        this.workingState = true;
+                    else if (ioState && ioState.val == false)
+                        this.workingState = false;
+                    else
+                        this.workingState = undefined;
+                });
+            }
             else
-                this.lastWorkingState = undefined;
+                this.workingState = undefined;
         });
     }
 
-    subscriptionEvent(stateName: string, ioState: ioBroker.State, callback: IInOutChangeNotify) {
-        if (!ioState)
-            return;
-
-        if (stateName == this.workingItem) {
-            this.adapter.log.debug('[' + this.stateName + '] got a working item change event: ' + JSON.stringify(ioState));
-            this.lastWorkingState = ioState.val;
-            this.setupDeferredChangeEvent(callback);
-        } else if (stateName == this.stateName) {
-            this.adapter.log.debug('[' + this.stateName + '] got a target state change event:' + JSON.stringify(ioState));
-            if (ioState.ack) {
-                this.lastAcknowledgedValue = ioState.val;
-                this.setupDeferredChangeEvent(callback);
-            }
-        }
-    }
-
-    setupDeferredChangeEvent(callback: IInOutChangeNotify) {
-        this.cancelDeferredChangeEvent();
-        this.debounceTimer = setTimeout(this.deferredChangeEvent.bind(this, callback), 150);
-    }
-
-    cancelDeferredChangeEvent() {
-        clearTimeout(this.debounceTimer);
-        this.debounceTimer = -1;
-    }
-
-    deferredChangeEvent(callback: IInOutChangeNotify) {
-        if (!this.lastWorkingState) { // only fire callback if the covering does not move
-            this.adapter.log.debug('[' + this.stateName + '] firing target state change event:' + JSON.stringify(this.lastAcknowledgedValue));
-            callback(this.lastAcknowledgedValue);
-        } else {
-            this.adapter.log.debug('[' + this.stateName + '] canceling target state change event - covering is working');
-        }
-    }
+    cacheChanged(stateName: string, callback: IInOutChangeNotify) {
+        this.adapter.log.debug('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.cacheChanged, Parameter ' + stateName + ' Value: ' + JSON.stringify(this.stateCache[stateName]));
+    } 
 }
 
