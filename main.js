@@ -2528,50 +2528,55 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var iofunc_base_1 = __webpack_require__(/*! ./iofunc.base */ "./yahka.functions/iofunc.base.ts");
 var TIoBrokerInOutFunction_KNXCovering_TargetPosition = /** @class */ (function (_super) {
     __extends(TIoBrokerInOutFunction_KNXCovering_TargetPosition, _super);
-    function TIoBrokerInOutFunction_KNXCovering_TargetPosition(adapter, currentName, targetName, stopName, upDowName, upName, downName) {
+    function TIoBrokerInOutFunction_KNXCovering_TargetPosition(adapter, currentName, targetName, upName, downName) {
         var _this = _super.call(this, adapter) || this;
         _this.adapter = adapter;
         _this.currentName = currentName;
         _this.targetName = targetName;
-        _this.stopName = stopName;
-        _this.upDowName = upDowName;
         _this.upName = upName;
         _this.downName = downName;
         _this.targetSetByHomeKit = false;
+        _this.onTheMove = false;
         _this.addSubscriptionRequest(currentName);
         _this.addSubscriptionRequest(targetName);
-        _this.addSubscriptionRequest(stopName);
-        _this.addSubscriptionRequest(upDowName);
         _this.addSubscriptionRequest(upName);
         _this.addSubscriptionRequest(downName);
         adapter.getForeignState(upName, function (error, ioState) {
             if (ioState && ioState.val == true) {
                 _this.valueForHomeKit = 0;
+                _this.onTheMove = true;
                 adapter.log.debug("IoBrokerInOutFunction_KNXWindowCovering_TargetPosition.constructor, opening window");
             }
             else if (ioState && ioState.val == false) {
                 adapter.getForeignState(upName, function (error, ioState) {
                     if (ioState && ioState.val == true) {
                         _this.valueForHomeKit = 100;
+                        _this.onTheMove = true;
                         adapter.log.debug("IoBrokerInOutFunction_KNXWindowCovering_TargetPosition.constructor, closing window");
                     }
                     else if (ioState && ioState.val == false) {
                         adapter.getForeignState(currentName, function (error, ioState) {
                             if (ioState) {
                                 _this.valueForHomeKit = ioState.val;
+                                _this.onTheMove = false;
                                 adapter.log.debug("IoBrokerInOutFunction_KNXWindowCovering_TargetPosition.constructor, current position: " + ioState.val);
                             }
                             else {
                                 _this.valueForHomeKit = undefined;
+                                _this.onTheMove = undefined;
                             }
                         });
                     }
-                    else
+                    else {
+                        _this.onTheMove = undefined;
                         _this.valueForHomeKit = undefined;
+                    }
                 });
             }
-            else
+            else {
+                _this.onTheMove = undefined;
                 _this.valueForHomeKit = undefined;
+            }
         });
         return _this;
     }
@@ -2588,21 +2593,15 @@ var TIoBrokerInOutFunction_KNXCovering_TargetPosition = /** @class */ (function 
         adapter.log.debug('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.Create, Parameter ' + JSON.stringify(p));
         var currentName = p[0];
         var targetName;
-        var stopName;
-        var upDowName;
         var upName;
         var downName;
         if (p.length >= 2)
             targetName = p[1];
         if (p.length >= 3)
-            stopName = p[2];
+            upName = p[2];
         if (p.length >= 4)
-            upDowName = p[3];
-        if (p.length >= 5)
-            upName = p[4];
-        if (p.length >= 6)
-            downName = p[5];
-        return new TIoBrokerInOutFunction_KNXCovering_TargetPosition(adapter, currentName, targetName, stopName, upDowName, upName, downName);
+            downName = p[3];
+        return new TIoBrokerInOutFunction_KNXCovering_TargetPosition(adapter, currentName, targetName, upName, downName);
     };
     TIoBrokerInOutFunction_KNXCovering_TargetPosition.prototype.cacheChanged = function (stateName, callback) {
         this.adapter.log.debug('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.cacheChanged, Parameter ' + stateName + ' Value: ' + JSON.stringify(this.stateCache.get(stateName)));
@@ -2621,6 +2620,10 @@ var TIoBrokerInOutFunction_KNXCovering_TargetPosition = /** @class */ (function 
         }
         else if (stateName == this.downName && this.stateCache.get(stateName).val == false) {
             this.targetSetByHomeKit = false;
+            this.valueForHomeKit = this.stateCache.get(this.currentName).val;
+            callback(this.valueForHomeKit);
+        }
+        else if (stateName == this.currentName && this.onTheMove == false) {
             this.valueForHomeKit = this.stateCache.get(this.currentName).val;
             callback(this.valueForHomeKit);
         }

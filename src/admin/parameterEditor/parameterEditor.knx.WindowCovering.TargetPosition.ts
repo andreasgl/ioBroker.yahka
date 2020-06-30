@@ -6,8 +6,6 @@ export class ParameterEditor_KNXWindowCoveringTargetPosition extends ParameterEd
     private templateNode: DocumentFragment;
     private txtCurrent: HTMLInputElement;
     private txtTarget: HTMLInputElement;
-    private txtSTOP: HTMLInputElement;
-    private txtUpDown: HTMLInputElement;
     private txtUp: HTMLInputElement;
     private txtDown: HTMLInputElement;
     constructor(valueChangeCallback: IParameterEditorDelegate) {
@@ -17,10 +15,6 @@ export class ParameterEditor_KNXWindowCoveringTargetPosition extends ParameterEd
         this.txtCurrent.addEventListener('input', (ev) => this.valueChanged());
         this.txtTarget = this.templateNode.querySelector("#target");
         this.txtTarget.addEventListener('input', (ev) => this.valueChanged());
-        this.txtSTOP = this.templateNode.querySelector("#STOP");
-        this.txtSTOP.addEventListener('input', (ev) => this.valueChanged());
-        this.txtUpDown = this.templateNode.querySelector("#UpDown");
-        this.txtUpDown.addEventListener('input', (ev) => this.valueChanged());
         this.txtUp = this.templateNode.querySelector("#Up");
         this.txtUp.addEventListener('input', (ev) => this.valueChanged());
         this.txtDown = this.templateNode.querySelector("#Down");
@@ -41,16 +35,14 @@ export class ParameterEditor_KNXWindowCoveringTargetPosition extends ParameterEd
 
             Utils.setInputValue(this.txtCurrent, (p.length >= 1) ? p[0] : "");
             Utils.setInputValue(this.txtTarget, (p.length >= 2) ? p[1] : "");
-            Utils.setInputValue(this.txtSTOP, (p.length >= 2) ? p[2] : "");
-            Utils.setInputValue(this.txtUpDown, (p.length >= 2) ? p[3] : "");
-            Utils.setInputValue(this.txtUp, (p.length >= 2) ? p[4] : "");
-            Utils.setInputValue(this.txtDown, (p.length >= 2) ? p[5] : "");
+            Utils.setInputValue(this.txtUp, (p.length >= 3) ? p[2] : "");
+            Utils.setInputValue(this.txtDown, (p.length >= 4) ? p[3] : "");
         }
         catch (e) {
             this.txtCurrent.value = parameterValue;
             this.txtTarget.value = "";
-            this.txtSTOP.value = "";
-            this.txtUpDown.value = "";
+            this.txtUp.value = "";
+            this.txtDown.value = "";
         }
     }
 
@@ -58,14 +50,6 @@ export class ParameterEditor_KNXWindowCoveringTargetPosition extends ParameterEd
         var resultArray: Array<string | number | boolean | Date> = [Utils.getInputValue(this.txtCurrent)];
         if (this.txtTarget.value)
             resultArray.push(Utils.getInputValue(this.txtTarget));
-        else
-            resultArray.push("")
-        if (this.txtSTOP.value)
-            resultArray.push(Utils.getInputValue(this.txtSTOP));
-        else
-            resultArray.push("")
-        if (this.txtUpDown.value)
-            resultArray.push(Utils.getInputValue(this.txtUpDown));
         else
             resultArray.push("")
         if (this.txtUp.value)

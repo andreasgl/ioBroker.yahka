@@ -3,6 +3,7 @@ import { adapter } from "@iobroker/adapter-core";
 
 export class TIoBrokerInOutFunction_KNXCovering_TargetPosition extends TIoBrokerInOutFunctionBase {
     protected targetSetByHomeKit: Boolean = false;
+    protected onTheMove: Boolean = false;
 
     static create(adapter: ioBroker.Adapter, parameters: any): IInOutFunction {
         let p: Array<string>;
@@ -21,60 +22,60 @@ export class TIoBrokerInOutFunction_KNXCovering_TargetPosition extends TIoBroker
 
         let currentName: string = p[0];
         let targetName: string;
-        let stopName: string;
-        let upDowName: string;
         let upName: string;
         let downName: string;
         if (p.length >= 2)
             targetName = p[1];
         if (p.length >= 3)
-            stopName = p[2];
+            upName = p[2];
         if (p.length >= 4)
-            upDowName = p[3];
-        if (p.length >= 5)
-            upName = p[4];
-        if (p.length >= 6)
-            downName = p[5];
+            downName = p[3];
 
-        return new TIoBrokerInOutFunction_KNXCovering_TargetPosition(adapter, currentName, targetName, stopName, upDowName, upName, downName);
+        return new TIoBrokerInOutFunction_KNXCovering_TargetPosition(adapter, currentName, targetName, upName, downName);
     }
 
 
-    constructor(protected adapter: ioBroker.Adapter, protected currentName: string, protected targetName: string, protected stopName: string, protected upDowName: string, protected upName: string, protected downName: string) {
+    constructor(protected adapter: ioBroker.Adapter, protected currentName: string, protected targetName: string, protected upName: string, protected downName: string) {
         super(adapter);
         this.addSubscriptionRequest(currentName);
         this.addSubscriptionRequest(targetName);
-        this.addSubscriptionRequest(stopName);
-        this.addSubscriptionRequest(upDowName);
         this.addSubscriptionRequest(upName);
         this.addSubscriptionRequest(downName);
         adapter.getForeignState(upName, (error, ioState) => {
             if (ioState && ioState.val == true) {
                 this.valueForHomeKit = 0;
+                this.onTheMove = true;
                 adapter.log.debug("IoBrokerInOutFunction_KNXWindowCovering_TargetPosition.constructor, opening window")
             }             
             else if (ioState && ioState.val == false) {
                 adapter.getForeignState(upName, (error, ioState) => {
                     if (ioState && ioState.val == true) {
                         this.valueForHomeKit = 100;
+                        this.onTheMove = true;
                         adapter.log.debug("IoBrokerInOutFunction_KNXWindowCovering_TargetPosition.constructor, closing window")
                     } 
                     else if (ioState && ioState.val == false) {
                         adapter.getForeignState(currentName, (error, ioState) => {
                             if (ioState) {
                                 this.valueForHomeKit = ioState.val;
+                                this.onTheMove = false;
                                 adapter.log.debug("IoBrokerInOutFunction_KNXWindowCovering_TargetPosition.constructor, current position: " + ioState.val)
                             } else {
                                 this.valueForHomeKit = undefined;
+                                this.onTheMove = undefined;
                             }
                         });
                     }                   
-                    else
+                    else {
+                        this.onTheMove = undefined;
                         this.valueForHomeKit = undefined;
+                    }                
                 });
             }
-            else
-            this.valueForHomeKit = undefined;
+            else {
+                this.onTheMove = undefined;
+                this.valueForHomeKit = undefined;
+            }
         });
     }
 
@@ -93,6 +94,9 @@ export class TIoBrokerInOutFunction_KNXCovering_TargetPosition extends TIoBroker
             callback(this.valueForHomeKit);
         } else if (stateName == this.downName && this.stateCache.get(stateName).val == false) {
             this.targetSetByHomeKit = false;
+            this.valueForHomeKit = this.stateCache.get(this.currentName).val;
+            callback(this.valueForHomeKit);
+        } else if (stateName == this.currentName && this.onTheMove == false) {
             this.valueForHomeKit = this.stateCache.get(this.currentName).val;
             callback(this.valueForHomeKit);
         }

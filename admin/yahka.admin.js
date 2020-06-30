@@ -37603,7 +37603,7 @@ exports.ParameterEditor_HomeMatic_Dimmer = ParameterEditor_HomeMatic_Dimmer;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"editor-table\">\n    <div class=\"row\">\n        <div class=\"cell\">\n            <span class=\"translate\">Current Position :</span>\n        </div>\n        <div class=\"cell\">\n            <div class=\"input-container full-width\">\n                <textarea id=\"current\" rows=1 class=\"stateSelectTarget\"></textarea>\n                <button class=\"input-control button id-selector\"><span class=\"mif-more-horiz\"></span></button>\n            </div>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div class=\"cell\">\n            <span class=\"translate\">Target Position:</span>\n        </div>\n        <div class=\"cell\">\n            <div class=\"input-container full-width\">\n                <textarea id=\"target\" rows=1 class=\"stateSelectTarget\"></textarea>\n                <button class=\"input-control button id-selector\"><span class=\"mif-more-horiz\"></span></button>\n            </div>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div class=\"cell\">\n            <span class=\"translate\">Stop:</span>\n        </div>\n        <div class=\"cell\">\n            <div class=\"input-container full-width\">\n                <textarea id=\"STOP\" rows=1 class=\"stateSelectTarget\"></textarea>\n                <button class=\"input-control button id-selector\"><span class=\"mif-more-horiz\"></span></button>\n            </div>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div class=\"cell\">\n            <span class=\"translate\">Up/Down:</span>\n        </div>\n        <div class=\"cell\">\n            <div class=\"input-container full-width\">\n                <textarea id=\"UpDown\" rows=1 class=\"stateSelectTarget\"></textarea>\n                <button class=\"input-control button id-selector\"><span class=\"mif-more-horiz\"></span></button>\n            </div>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div class=\"cell\">\n            <span class=\"translate\">Up:</span>\n        </div>\n        <div class=\"cell\">\n            <div class=\"input-container full-width\">\n                <textarea id=\"Up\" rows=1 class=\"stateSelectTarget\"></textarea>\n                <button class=\"input-control button id-selector\"><span class=\"mif-more-horiz\"></span></button>\n            </div>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div class=\"cell\">\n            <span class=\"translate\">Down:</span>\n        </div>\n        <div class=\"cell\">\n            <div class=\"input-container full-width\">\n                <textarea id=\"Down\" rows=1 class=\"stateSelectTarget\"></textarea>\n                <button class=\"input-control button id-selector\"><span class=\"mif-more-horiz\"></span></button>\n            </div>\n        </div>\n    </div>\n</div>"
+module.exports = "<div class=\"editor-table\">\n    <div class=\"row\">\n        <div class=\"cell\">\n            <span class=\"translate\">Current Position :</span>\n        </div>\n        <div class=\"cell\">\n            <div class=\"input-container full-width\">\n                <textarea id=\"current\" rows=1 class=\"stateSelectTarget\"></textarea>\n                <button class=\"input-control button id-selector\"><span class=\"mif-more-horiz\"></span></button>\n            </div>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div class=\"cell\">\n            <span class=\"translate\">Target Position:</span>\n        </div>\n        <div class=\"cell\">\n            <div class=\"input-container full-width\">\n                <textarea id=\"target\" rows=1 class=\"stateSelectTarget\"></textarea>\n                <button class=\"input-control button id-selector\"><span class=\"mif-more-horiz\"></span></button>\n            </div>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div class=\"cell\">\n            <span class=\"translate\">Up:</span>\n        </div>\n        <div class=\"cell\">\n            <div class=\"input-container full-width\">\n                <textarea id=\"Up\" rows=1 class=\"stateSelectTarget\"></textarea>\n                <button class=\"input-control button id-selector\"><span class=\"mif-more-horiz\"></span></button>\n            </div>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div class=\"cell\">\n            <span class=\"translate\">Down:</span>\n        </div>\n        <div class=\"cell\">\n            <div class=\"input-container full-width\">\n                <textarea id=\"Down\" rows=1 class=\"stateSelectTarget\"></textarea>\n                <button class=\"input-control button id-selector\"><span class=\"mif-more-horiz\"></span></button>\n            </div>\n        </div>\n    </div>\n</div>"
 
 /***/ }),
 
@@ -37639,10 +37639,6 @@ var ParameterEditor_KNXWindowCoveringTargetPosition = /** @class */ (function (_
         _this.txtCurrent.addEventListener('input', function (ev) { return _this.valueChanged(); });
         _this.txtTarget = _this.templateNode.querySelector("#target");
         _this.txtTarget.addEventListener('input', function (ev) { return _this.valueChanged(); });
-        _this.txtSTOP = _this.templateNode.querySelector("#STOP");
-        _this.txtSTOP.addEventListener('input', function (ev) { return _this.valueChanged(); });
-        _this.txtUpDown = _this.templateNode.querySelector("#UpDown");
-        _this.txtUpDown.addEventListener('input', function (ev) { return _this.valueChanged(); });
         _this.txtUp = _this.templateNode.querySelector("#Up");
         _this.txtUp.addEventListener('input', function (ev) { return _this.valueChanged(); });
         _this.txtDown = _this.templateNode.querySelector("#Down");
@@ -37662,30 +37658,20 @@ var ParameterEditor_KNXWindowCoveringTargetPosition = /** @class */ (function (_
                 p = [];
             admin_utils_1.Utils.setInputValue(this.txtCurrent, (p.length >= 1) ? p[0] : "");
             admin_utils_1.Utils.setInputValue(this.txtTarget, (p.length >= 2) ? p[1] : "");
-            admin_utils_1.Utils.setInputValue(this.txtSTOP, (p.length >= 2) ? p[2] : "");
-            admin_utils_1.Utils.setInputValue(this.txtUpDown, (p.length >= 2) ? p[3] : "");
-            admin_utils_1.Utils.setInputValue(this.txtUp, (p.length >= 2) ? p[4] : "");
-            admin_utils_1.Utils.setInputValue(this.txtDown, (p.length >= 2) ? p[5] : "");
+            admin_utils_1.Utils.setInputValue(this.txtUp, (p.length >= 3) ? p[2] : "");
+            admin_utils_1.Utils.setInputValue(this.txtDown, (p.length >= 4) ? p[3] : "");
         }
         catch (e) {
             this.txtCurrent.value = parameterValue;
             this.txtTarget.value = "";
-            this.txtSTOP.value = "";
-            this.txtUpDown.value = "";
+            this.txtUp.value = "";
+            this.txtDown.value = "";
         }
     };
     ParameterEditor_KNXWindowCoveringTargetPosition.prototype.buildNewParameterValue = function () {
         var resultArray = [admin_utils_1.Utils.getInputValue(this.txtCurrent)];
         if (this.txtTarget.value)
             resultArray.push(admin_utils_1.Utils.getInputValue(this.txtTarget));
-        else
-            resultArray.push("");
-        if (this.txtSTOP.value)
-            resultArray.push(admin_utils_1.Utils.getInputValue(this.txtSTOP));
-        else
-            resultArray.push("");
-        if (this.txtUpDown.value)
-            resultArray.push(admin_utils_1.Utils.getInputValue(this.txtUpDown));
         else
             resultArray.push("");
         if (this.txtUp.value)
