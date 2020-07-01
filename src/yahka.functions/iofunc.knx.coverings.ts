@@ -80,25 +80,36 @@ export class TIoBrokerInOutFunction_KNXCovering_TargetPosition extends TIoBroker
     }
 
     cacheChanged(stateName: string, callback: IInOutChangeNotify) {
-        this.adapter.log.debug('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.cacheChanged, Parameter ' + stateName + ' Value: ' + JSON.stringify(this.stateCache.get(stateName)));
+        this.adapter.log.warn('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.cacheChanged, Parameter ' + stateName + ' Value: ' + JSON.stringify(this.stateCache.get(stateName)));
 
         if(stateName == this.upName && this.stateCache.get(stateName).val == true && this.targetSetByHomeKit == false) {
             this.valueForHomeKit = 0;
+            this.onTheMove = true;
+            this.adapter.log.warn('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.cacheChanged, Sending 0. State: ' + this.upName + ' going up and target set by HomeKit: false');
             callback(this.valueForHomeKit);
         } else if (stateName == this.upName && this.stateCache.get(stateName).val == false) {
             this.targetSetByHomeKit = false;
             this.valueForHomeKit = this.stateCache.get(this.currentName).val;
+            this.onTheMove = false;
+            this.adapter.log.warn('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.cacheChanged, Sending ' + this.stateCache.get(this.currentName).val + ' State: '  + this.upName + ' stopped.');
             callback(this.valueForHomeKit);
         } else if(stateName == this.downName && this.stateCache.get(stateName).val == true && this.targetSetByHomeKit == false) {
             this.valueForHomeKit = 100;
+            this.onTheMove = true;
+            this.adapter.log.warn('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.cacheChanged, Sending 100 State: ' + this.downName + 'going down and target set by HomeKit: false');
             callback(this.valueForHomeKit);
         } else if (stateName == this.downName && this.stateCache.get(stateName).val == false) {
             this.targetSetByHomeKit = false;
             this.valueForHomeKit = this.stateCache.get(this.currentName).val;
+            this.onTheMove =  false;
+            this.adapter.log.warn('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.cacheChanged, Sending ' + this.stateCache.get(this.currentName).val + ' State: ' + this.downName + ' stopped.');
             callback(this.valueForHomeKit);
         } else if (stateName == this.currentName && this.onTheMove == false) {
             this.valueForHomeKit = this.stateCache.get(this.currentName).val;
+            this.adapter.log.warn('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.cacheChanged, Sending ' + this.stateCache.get(this.currentName).val + ' State: ' + this.currentName + ' onTheMove=false');
             callback(this.valueForHomeKit);
+        } else {
+            this.adapter.log.warn('TIoBrokerInOutFunction_KNXWindowCovering_TargetPosition.cacheChanged, Sending nothing ' + stateName + ' OnTheMove: ' + this.onTheMove + ' TargetSetByHomeKit: ' + this.targetSetByHomeKit);
         }
     } 
 
@@ -168,19 +179,23 @@ export class TIoBrokerInOutFunction_KNXCovering_PositionState extends TIoBrokerI
     }
 
     cacheChanged(stateName: string, callback: IInOutChangeNotify) {
-        this.adapter.log.debug('TIoBrokerInOutFunction_KNXWindowCovering_PositionState.cacheChanged, Parameter ' + stateName + ' Value: ' + JSON.stringify(this.stateCache.get(stateName)));
+        this.adapter.log.warn('TIoBrokerInOutFunction_KNXWindowCovering_PositionState.cacheChanged, Parameter ' + stateName + ' Value: ' + JSON.stringify(this.stateCache.get(stateName)));
 
         if(stateName == this.upName && this.stateCache.get(stateName).val == true) {
             this.valueForHomeKit = 1; // case opening = 1
+            this.adapter.log.warn('TIoBrokerInOutFunction_KNXWindowCovering_PositionState.cacheChanged, Sending Opening');
             callback(this.valueForHomeKit);
         } else if (stateName == this.upName && this.stateCache.get(stateName).val == false) {
             this.valueForHomeKit = 2; // case stopped = 2
+            this.adapter.log.warn('TIoBrokerInOutFunction_KNXWindowCovering_PositionState.cacheChanged, Sending Stopped');
             callback(this.valueForHomeKit);
         } else if(stateName == this.downName && this.stateCache.get(stateName).val == true) {
             this.valueForHomeKit = 0; // case closing = 0
+            this.adapter.log.warn('TIoBrokerInOutFunction_KNXWindowCovering_PositionState.cacheChanged, Sending Closing');
             callback(this.valueForHomeKit);
         } else if (stateName == this.downName && this.stateCache.get(stateName).val == false) {
             this.valueForHomeKit = 2; // case stopped = 2
+            this.adapter.log.warn('TIoBrokerInOutFunction_KNXWindowCovering_PositionState.cacheChanged, Sending Stopped');
             callback(this.valueForHomeKit);
         } 
     } 
